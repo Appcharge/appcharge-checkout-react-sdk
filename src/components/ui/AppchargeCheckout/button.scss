@@ -1,0 +1,117 @@
+.sneakers-button {
+  position: relative;
+  width: 100%;
+  height: 55px;
+  background: #9DD558;
+  border-radius: 18px;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+
+  &:disabled {
+    background-color: #bebebe !important;
+    cursor: default;
+
+    img {
+      transform: none !important;
+    }
+  }
+
+  &:hover {
+    background: lighten($color: #9DD558, $amount: 5%);
+  }
+
+  &:active {
+    background: darken($color: #9DD558, $amount: 5%);
+  }
+}
+
+.sneakers-button--left {
+  img {
+    position: absolute;
+    left: 30px;
+    margin-top: 2.2px;
+    transition: transform 0.15s ease-in-out;
+  }
+
+  &:hover {
+    img {
+      transform: translateX(-8px);
+    }
+  }
+}
+
+.sneakers-button--right {
+  img {
+    position: absolute;
+    right: 30px;
+    margin-top: 2.2px;
+    transition: transform 0.15s ease-in-out;
+  }
+
+  &:hover {
+    img {
+      transform: translateX(8px);
+    }
+  }
+}
+
+.sneakers-button--full-width {
+  width: 100% !important;
+}
+
+.sneakers-button--large {
+  width: 300px;
+  height: 55px;
+}
+
+.sneakers-button--medium {
+  width: 200px;
+  height: 45px;
+}
+
+.sneakers-button--small {
+  width: 150px;
+  height: 35px;
+}
+
+.sneakers-button--micro {
+  width: 90px;
+  height: 25px;
+  border-radius: 10px;
+}
+
+.sneakers-button--anim-disabled {
+  &:disabled {
+    animation: button-loading 1.5s ease-in-out infinite !important;
+  }
+}
+
+.sneakers-button--cancel-order {
+  background: #de41418d;
+
+  &:hover {
+    background: lighten($color: #de4141, $amount: 5%);
+  }
+
+  &:active {
+    background: darken($color: #de4141, $amount: 5%);
+  }
+}
+
+@keyframes button-loading {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
