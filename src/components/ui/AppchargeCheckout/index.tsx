@@ -25,6 +25,7 @@ export interface EventParams {
 export interface AppchargeCheckoutProps {
   domain: string;
   sessionToken: string;
+  refferlUrl: string;
   onOpen?: () => void;
   onClose?: () => void;
   onInitialLoad?: () => void;
