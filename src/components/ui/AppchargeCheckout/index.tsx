@@ -1,22 +1,44 @@
 import { useEffect } from "react";
 import "./styles.scss";
 
+export interface EventParams {
+  orderId: string;
+  orderExternalId: string;
+  date: string;
+  sessionId: string;
+  purchaseInvoiceId: string;
+  appChargePaymentId: string;
+  bundleName: string;
+  bundleId: string;
+  bundleSKU: string;
+  productAmount: string;
+  productSKU: string;
+  productName: string;
+  totalSum: number;
+  totalSumCurrency: string;
+  userId?: string;
+  userCountry?: string;
+  paymentMethodName: string;
+  reason?: string;
+}
+
 export interface AppchargeCheckoutProps {
   domain: string;
   sessionToken: string;
   onOpen?: () => void;
   onClose?: () => void;
   onInitialLoad?: () => void;
-  onPaymentIntentFailed?: () => void;
-  onOrderCompletedFailed?: () => void;
-  onPaymentIntentSuccess?: () => void;
-  onOrderCompletedSucessfuly?: () => void;
+  onOrderCreated?: (params: Partial<EventParams>) => void;
+  onPaymentIntentFailed?: (params: Partial<EventParams>) => void;
+  onOrderCompletedFailed?: (params: Partial<EventParams>) => void;
+  onPaymentIntentSuccess?: (params: Partial<EventParams>) => void;
+  onOrderCompletedSuccessfully?: (params: Partial<EventParams>) => void;
 }
 
 enum EventEnum {
   paymentIntentSuccess = "Payment_intent_success",
   paymentIntentFailed = "Payment_intent_failed",
-  orderCompletedSucessfuly = "Order_completed_sucessfuly",
+  orderCompletedSuccessfully = "Order_completed_successfully",
   orderCompletedFailed = "Order_completed_failed",
 }
 
@@ -26,27 +48,29 @@ function AppchargeCheckout({
   domain,
   sessionToken,
   onInitialLoad,
+  onOrderCreated,
   onPaymentIntentFailed,
   onPaymentIntentSuccess,
   onOrderCompletedFailed,
-  onOrderCompletedSucessfuly,
+  onOrderCompletedSuccessfully,
 }: AppchargeCheckoutProps) {
 
   useEffect(() => {
     const eventHandler = (event: MessageEvent) => {
       if (event.origin !== domain) return;
-      switch (event.data) {
+      const params = event.data.params;
+      switch (event.data.event) {
         case EventEnum.orderCompletedFailed:
-          onOrderCompletedFailed?.();
+          onOrderCompletedFailed?.(params);
           break;
-        case EventEnum.orderCompletedSucessfuly:
-          onOrderCompletedSucessfuly?.();
+        case EventEnum.orderCompletedSuccessfully:
+          onOrderCompletedSuccessfully?.(params);
           break;
         case EventEnum.paymentIntentFailed:
-          onPaymentIntentFailed?.();
+          onPaymentIntentFailed?.(params);
           break;
         case EventEnum.paymentIntentSuccess:
-          onPaymentIntentSuccess?.();
+          onPaymentIntentSuccess?.(params);
           break;
       }
     };
@@ -57,10 +81,11 @@ function AppchargeCheckout({
       window.removeEventListener("message", eventHandler);
     };
   }, [
+    onOrderCreated,
     onPaymentIntentFailed,
     onPaymentIntentSuccess,
     onOrderCompletedFailed,
-    onOrderCompletedSucessfuly,
+    onOrderCompletedSuccessfully,
   ]);
 
   const url = `${domain}/${sessionToken}`; // https://checkout-v2.appcharge.com

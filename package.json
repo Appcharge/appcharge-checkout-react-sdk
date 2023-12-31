@@ -1,6 +1,6 @@
 {
   "name": "appcharge-checkout-react-sdk",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "author": "Appcharge inc",
   "license": "MIT",
   "main": "lib/index.js",
@@ -45,7 +45,7 @@
     "ts-jest": "^27.0.5",
     "typescript": "^4.4.3"
   },
-  "description": "",
+  "description": "Welcome to Appcharge's Checkout Solution, get up and running in a few easy steps.",
   "directories": {
     "lib": "lib"
   },
