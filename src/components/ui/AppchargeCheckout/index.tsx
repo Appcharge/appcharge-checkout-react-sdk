@@ -1,6 +1,12 @@
 import { useEffect } from "react";
 import "./styles.scss";
 
+export interface Product {
+  name: string;
+  sku: string;
+  amount: string | number;
+}
+
 export interface EventParams {
   orderId: string;
   orderExternalId: string;
@@ -11,14 +17,12 @@ export interface EventParams {
   bundleName: string;
   bundleId: string;
   bundleSKU: string;
-  productAmount: string;
-  productSKU: string;
-  productName: string;
+  products: Product[];
   totalSum: number;
   totalSumCurrency: string;
+  paymentMethodName: string;
   userId?: string;
   userCountry?: string;
-  paymentMethodName: string;
   reason?: string;
 }
 
