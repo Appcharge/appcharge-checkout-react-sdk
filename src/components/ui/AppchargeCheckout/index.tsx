@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import "./styles.scss";
+import { useEffect } from 'react';
+import './styles.scss';
 
 export interface Product {
   name: string;
@@ -35,7 +35,7 @@ export enum EFEEvent {
 }
 
 interface FEMessage {
-  name: EFEEvent;
+  event: EFEEvent;
   params: any;
 }
 
@@ -65,10 +65,10 @@ function AppchargeCheckout({
 }: AppchargeCheckoutProps) {
 
   useEffect(() => {
-    const eventHandler = (event: MessageEvent<FEMessage>) => {
-      if (event.origin !== domain) return;
-      const params = event.data.params;
-      switch (event.data.name) {
+    const eventHandler = (massageEvent: MessageEvent<FEMessage>) => {
+      if (massageEvent.origin !== domain) return;
+      const { params, event } = massageEvent.data;
+      switch (event) {
         case EFEEvent.ORDER_CREATED:
           onOrderCreated?.(params);
           break;
@@ -87,19 +87,20 @@ function AppchargeCheckout({
       }
     };
 
-    window.addEventListener("message", eventHandler);
+    window.addEventListener('message', eventHandler);
 
     return () => {
-      window.removeEventListener("message", eventHandler);
+      window.removeEventListener('message', eventHandler);
     };
   }, [
+    domain,
     onOrderCreated,
     onPaymentIntentFailed,
     onPaymentIntentSuccess,
     onOrderCompletedFailed,
     onOrderCompletedSuccessfully,
   ]);
-  
+
   const url = `${domain}/${sessionToken}`; // https://checkout-v2.appcharge.com
 
   return (
