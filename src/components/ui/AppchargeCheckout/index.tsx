@@ -26,6 +26,19 @@ export interface EventParams {
   reason?: string;
 }
 
+export enum EFEEvent {
+  ORDER_CREATED = 'appcharge_order_created',
+  PAYMENT_INTENT_SUCCESS = 'appcharge_payment_intent_success',
+  PAYMENT_INTENT_FAILED = 'appcharge_payment_intent_failed',
+  ORDER_COMPLETED_SUCCESS = 'appcharge_order_completed_success',
+  ORDER_COMPLETED_FAILED = 'appcharge_order_completed_failed',
+}
+
+interface FEMessage {
+  name: EFEEvent;
+  params: any;
+}
+
 export interface AppchargeCheckoutProps {
   domain: string;
   sessionToken: string;
@@ -40,15 +53,6 @@ export interface AppchargeCheckoutProps {
   onOrderCompletedSuccessfully?: (params: Partial<EventParams>) => void;
 }
 
-enum EventEnum {
-  paymentIntentSuccess = "Payment_intent_success",
-  paymentIntentFailed = "Payment_intent_failed",
-  orderCompletedSuccessfully = "Order_completed_successfully",
-  orderCompletedFailed = "Order_completed_failed",
-}
-
-// export interface AppchargeCheckoutPropsV2 {}
-
 function AppchargeCheckout({
   domain,
   sessionToken,
@@ -61,20 +65,23 @@ function AppchargeCheckout({
 }: AppchargeCheckoutProps) {
 
   useEffect(() => {
-    const eventHandler = (event: MessageEvent) => {
+    const eventHandler = (event: MessageEvent<FEMessage>) => {
       if (event.origin !== domain) return;
       const params = event.data.params;
-      switch (event.data.event) {
-        case EventEnum.orderCompletedFailed:
+      switch (event.data.name) {
+        case EFEEvent.ORDER_CREATED:
+          onOrderCreated?.(params);
+          break;
+        case EFEEvent.ORDER_COMPLETED_FAILED:
           onOrderCompletedFailed?.(params);
           break;
-        case EventEnum.orderCompletedSuccessfully:
+        case EFEEvent.ORDER_COMPLETED_SUCCESS:
           onOrderCompletedSuccessfully?.(params);
           break;
-        case EventEnum.paymentIntentFailed:
+        case EFEEvent.PAYMENT_INTENT_FAILED:
           onPaymentIntentFailed?.(params);
           break;
-        case EventEnum.paymentIntentSuccess:
+        case EFEEvent.PAYMENT_INTENT_SUCCESS:
           onPaymentIntentSuccess?.(params);
           break;
       }
@@ -92,7 +99,7 @@ function AppchargeCheckout({
     onOrderCompletedFailed,
     onOrderCompletedSuccessfully,
   ]);
-
+  
   const url = `${domain}/${sessionToken}`; // https://checkout-v2.appcharge.com
 
   return (
