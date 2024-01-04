@@ -4,13 +4,13 @@ Welcome to Appcharge's Checkout Solution, get up and running in a few easy steps
 
 ### Installation
 To install, run this code:
-`npm i appcharge-checkout-react-sdk`
+`npm i appcharge-checkout-reactjs-sdk`
 
 ### Import
 In your React component, import the AppchargeCheckout component:
 
 ```ts
-import { AppchargeCheckout } from "appcharge-checkout-react-sdk";
+import { AppchargeCheckout } from "appcharge-checkout-reactjs-sdk";
 ```
 
 The easiest way to get started is by using this code snippet:
@@ -30,6 +30,7 @@ The easiest way to get started is by using this code snippet:
 | ----------------------------| --------- | --------- |
 | `domain`                    | string    | **Yes**   |
 | `sessionToken`              | string    | **Yes**   |
+| `referrUrl`                 | string    | **Yes**   |
 | `onInitialLoad`             | Function  | No        |
 | `onPaymentIntentFailed`     | Function  | No        |
 | `onPaymentIntentSuccess`    | Function  | No        |
