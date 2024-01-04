@@ -32,6 +32,7 @@ export enum EFEEvent {
   PAYMENT_INTENT_FAILED = 'appcharge_payment_intent_failed',
   ORDER_COMPLETED_SUCCESS = 'appcharge_order_completed_success',
   ORDER_COMPLETED_FAILED = 'appcharge_order_completed_failed',
+  CLOSE_CHECKOUT = 'appcharge_close_checkout',
 }
 
 interface FEMessage {
@@ -42,7 +43,7 @@ interface FEMessage {
 export interface AppchargeCheckoutProps {
   domain: string;
   sessionToken: string;
-  refferlUrl: string;
+  referrlUrl: string;
   onOpen?: () => void;
   onClose?: () => void;
   onInitialLoad?: () => void;
@@ -56,6 +57,7 @@ export interface AppchargeCheckoutProps {
 function AppchargeCheckout({
   domain,
   sessionToken,
+  onClose,
   onInitialLoad,
   onOrderCreated,
   onPaymentIntentFailed,
@@ -84,6 +86,9 @@ function AppchargeCheckout({
         case EFEEvent.PAYMENT_INTENT_SUCCESS:
           onPaymentIntentSuccess?.(params);
           break;
+        case EFEEvent.CLOSE_CHECKOUT:
+          onClose?.();
+          break;  
       }
     };
 
