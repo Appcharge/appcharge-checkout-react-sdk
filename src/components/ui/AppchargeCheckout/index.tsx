@@ -43,7 +43,7 @@ interface FEMessage {
 export interface AppchargeCheckoutProps {
   domain: string;
   sessionToken: string;
-  referrlUrl: string;
+  referrerUrl: string;
   onOpen?: () => void;
   onClose?: () => void;
   onInitialLoad?: () => void;
