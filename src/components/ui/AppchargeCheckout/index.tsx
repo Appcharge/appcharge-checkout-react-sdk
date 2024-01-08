@@ -33,6 +33,7 @@ export enum EFEEvent {
   ORDER_COMPLETED_SUCCESS = 'appcharge_order_completed_success',
   ORDER_COMPLETED_FAILED = 'appcharge_order_completed_failed',
   CLOSE_CHECKOUT = 'appcharge_close_checkout',
+  CHECKOUT_OPENED = 'appcharge_checkout_opened',
 }
 
 interface FEMessage {
@@ -58,6 +59,7 @@ function AppchargeCheckout({
   domain,
   sessionToken,
   onClose,
+  onOpen,
   onInitialLoad,
   onOrderCreated,
   onPaymentIntentFailed,
@@ -88,6 +90,9 @@ function AppchargeCheckout({
           break;
         case EFEEvent.CLOSE_CHECKOUT:
           onClose?.();
+          break;
+        case EFEEvent.CHECKOUT_OPENED:
+          onOpen?.();
           break;  
       }
     };
