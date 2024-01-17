@@ -298,7 +298,9 @@ function AppchargeCheckout({
         iframeRef.current &&
           sendIframeMessage(iframeRef.current, {
             event: EFEEvent.APPCHARGE_THEME,
-            params: localStorage.getItem('ac_co_theme'),
+            params:
+              localStorage.getItem('ac_co_theme') &&
+              JSON.parse(localStorage.getItem('ac_co_theme') || 'null'),
           });
         onInitialLoad?.();
       }}

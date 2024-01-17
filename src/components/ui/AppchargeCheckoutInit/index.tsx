@@ -21,7 +21,10 @@ function AppchargeCheckoutInit({
     fetch(`https://api${env}.appcharge.com/checkout/v1/${domain}/boot`)
       .then((res) => res.json())
       .then((data) => {
-        localStorage.setItem(APPCHARGE_CHECKOUT_THEME, data.theme);
+        localStorage.setItem(
+          APPCHARGE_CHECKOUT_THEME,
+          JSON.stringify(data.theme)
+        );
       })
       .catch((err) => {
         localStorage.removeItem(APPCHARGE_CHECKOUT_THEME);
