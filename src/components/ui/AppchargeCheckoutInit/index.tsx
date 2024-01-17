@@ -2,20 +2,18 @@ import { useEffect } from 'react';
 import './styles.scss';
 
 export interface AppchargeCheckoutInitProps {
-  publisherToken: string;
   sandbox?: boolean;
   domain?: string;
-  environment?: 'dev' | 'sandbox' | 'production';
+  environment?: 'dev' | 'sandbox' | 'prod';
 }
 
 const APPCHARGE_CHECKOUT_THEME = 'ac_co_theme';
 
 function AppchargeCheckoutInit({
-  publisherToken,
   environment = 'sandbox',
   domain = window.location.host,
 }: AppchargeCheckoutInitProps) {
-  const env = environment === 'production' ? '' : `-${environment}`;
+  const env = environment === 'prod' ? '' : `-${environment}`;
 
   useEffect(() => {
     fetch(`https://api${env}.appcharge.com/checkout/v1/${domain}/boot`)
@@ -29,7 +27,7 @@ function AppchargeCheckoutInit({
       .catch((err) => {
         localStorage.removeItem(APPCHARGE_CHECKOUT_THEME);
       });
-  }, [publisherToken]);
+  }, [domain, env]);
 
   return (
     <iframe
