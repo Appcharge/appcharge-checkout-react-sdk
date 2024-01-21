@@ -21,7 +21,7 @@ function AppchargeCheckoutInit({
       .then((data) => {
         localStorage.setItem(
           APPCHARGE_CHECKOUT_THEME,
-          JSON.stringify({theme: data.theme, pks: data.pks})
+          JSON.stringify({ theme: data.theme, pks: data.pks })
         );
       })
       .catch((err) => {
