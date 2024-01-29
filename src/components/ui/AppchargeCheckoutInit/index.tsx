@@ -4,7 +4,7 @@ import './styles.scss';
 export interface AppchargeCheckoutInitProps {
   sandbox?: boolean;
   domain?: string;
-  environment?: 'dev' | 'sandbox' | 'prod';
+  environment?: 'dev' | 'sandbox' | 'production';
 }
 
 const APPCHARGE_CHECKOUT_THEME = 'ac_co_theme';
@@ -13,7 +13,7 @@ function AppchargeCheckoutInit({
   environment = 'sandbox',
   domain = window.location.host,
 }: AppchargeCheckoutInitProps) {
-  const env = environment === 'prod' ? '' : `-${environment}`;
+  const env = environment === 'production' ? '' : `-${environment}`;
 
   useEffect(() => {
     fetch(`https://api${env}.appcharge.com/checkout/v1/${domain}/boot`)
