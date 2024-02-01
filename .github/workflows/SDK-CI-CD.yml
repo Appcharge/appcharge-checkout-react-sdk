@@ -1,0 +1,36 @@
+name: Checkout React SDK CI/CD
+
+on:
+  push:
+    branches: [ "feat/CI-CD" ]
+
+jobs:
+  Build-Scan-Publish:
+    name: Build-Scan-Publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies and build 
+        run: |
+          npm ci
+          npm run build
+
+      - name: Vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'library'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Publish new version
+        run: |
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_PUBLIC }}
+      
