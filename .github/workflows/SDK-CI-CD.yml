@@ -2,7 +2,7 @@ name: Checkout React SDK CI/CD
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "feat/CI-CD" ]
 
 jobs:
   Build-Scan-Publish:
