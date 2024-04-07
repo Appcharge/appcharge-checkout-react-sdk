@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.8](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v0.1.7...v0.1.8) (2024-04-07)
+
+
+### Features
+
+* :sparkles: this is a test ([#7](https://github.com/Appcharge/appcharge-checkout-react-sdk/issues/7)) ([92a6cea](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/92a6ceace3929a329497d197e2327e7241f0275d))
+
 ### 0.1.7 (2024-03-28)
 
 
