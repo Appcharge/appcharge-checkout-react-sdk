@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.11](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v1.1.10...v1.1.11) (2024-04-15)
+
+
+### Bug Fixes
+
+* :art: fix overlay width ([53c9b89](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/53c9b895ec315686e6e9812c17d9e83eb13d76cb))
+
 ### [1.1.10](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v1.1.9...v1.1.10) (2024-04-07)
 
 ### [1.1.9](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v0.1.8...v1.1.9) (2024-04-07)
