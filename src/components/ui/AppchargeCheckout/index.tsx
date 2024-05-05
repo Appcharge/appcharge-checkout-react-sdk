@@ -215,7 +215,7 @@ export interface AppchargeCheckoutProps {
   sessionToken: string;
   referrerUrl: string;
   onOpen?: () => void;
-  onClose?: () => void;
+  onClose?: (params: Partial<EventParams>) => void;
   onInitialLoad?: () => void;
   onOrderCreated?: (params: Partial<EventParams>) => void;
   onPaymentIntentFailed?: (params: Partial<EventParams>) => void;
@@ -263,7 +263,7 @@ function AppchargeCheckout({
           onPaymentIntentSuccess?.(params);
           break;
         case EFEEvent.CLOSE_CHECKOUT:
-          onClose?.();
+          onClose?.(params);
           break;
         case EFEEvent.CHECKOUT_OPENED:
           onOpen?.();
