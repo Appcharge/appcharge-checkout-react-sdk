@@ -2,6 +2,7 @@ import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
+import replace from '@rollup/plugin-replace';
 
 import postcss from "rollup-plugin-postcss";
 
@@ -28,6 +29,10 @@ export default {
     postcss(),
     typescript({
       tsconfig: './tsconfig.json',
+    }),
+    replace({
+      'process.env.sdkVersion': packageJson.version,
+
     })
   ]
 };
