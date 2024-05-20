@@ -288,7 +288,7 @@ function AppchargeCheckout({
   ]);
 
   const sdkVersion = 'process.env.sdkVersion';
-  const queryParams = `sdk-version=${sdkVersion}&source-version=react-${sourceVersion || ''}`;
+  const queryParams = `sdk-version=react-${sdkVersion}&source-version=${sourceVersion || ''}`;
 
   const url = `${checkoutUrl}/${sessionToken}?${queryParams}`; // https://checkout-v2.appcharge.com
 
