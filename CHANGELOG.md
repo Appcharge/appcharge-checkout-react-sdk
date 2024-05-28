@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.15](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v1.1.11...v1.1.15) (2024-05-28)
+
+
+### Bug Fixes
+
+* :adhesive_bandage: fix iframe height ([ed3168d](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/ed3168de0ab919eaafe19edef50e4a6ad03b5cfd))
+
 ### [1.1.11](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v1.1.10...v1.1.11) (2024-04-15)
 
 
