@@ -4,6 +4,7 @@ import './styles.scss';
 export interface AppchargeCheckoutInitProps {
   sandbox?: boolean;
   domain?: string;
+  publisherToken?: string;
   environment?: 'dev' | 'sandbox' | 'prod';
 }
 
@@ -12,11 +13,16 @@ const APPCHARGE_CHECKOUT_THEME = 'ac_co_theme';
 function AppchargeCheckoutInit({
   environment = 'sandbox',
   domain = window.location.host,
+  publisherToken = "",
 }: AppchargeCheckoutInitProps) {
   const env = environment === 'prod' ? '' : `-${environment}`;
 
   useEffect(() => {
-    fetch(`https://api${env}.appcharge.com/checkout/v1/${domain}/boot`)
+    fetch(`https://api${env}.appcharge.com/checkout/v1/${domain}/boot`, {
+      headers: {
+        'x-checkout-token': publisherToken
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         localStorage.setItem(
@@ -27,7 +33,7 @@ function AppchargeCheckoutInit({
       .catch((err) => {
         localStorage.removeItem(APPCHARGE_CHECKOUT_THEME);
       });
-  }, [domain, env]);
+  }, [domain, env, publisherToken]);
 
   return (
     <iframe

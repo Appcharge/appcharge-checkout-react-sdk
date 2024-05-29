@@ -215,6 +215,7 @@ export interface AppchargeCheckoutProps {
   sessionToken: string;
   referrerUrl: string;
   sourceVersion?: string;
+  publisherToken?: string;
   onOpen?: () => void;
   onClose?: (params: Partial<EventParams>) => void;
   onInitialLoad?: () => void;
@@ -229,6 +230,7 @@ function AppchargeCheckout({
   checkoutUrl,
   sessionToken,
   sourceVersion,
+  publisherToken = '',
   onClose,
   onOpen,
   onInitialLoad,
@@ -288,7 +290,7 @@ function AppchargeCheckout({
   ]);
 
   const sdkVersion = 'process.env.sdkVersion';
-  const queryParams = `sdk-version=react-${sdkVersion}&source-version=${sourceVersion || ''}`;
+  const queryParams = `sdk-version=react-${sdkVersion}&source-version=${sourceVersion || ''}&publisher-token=${publisherToken}`;
 
   const url = `${checkoutUrl}/${sessionToken}?${queryParams}`; // https://checkout-v2.appcharge.com
 
