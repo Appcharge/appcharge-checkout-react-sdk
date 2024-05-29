@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v1.1.15...v1.2.0) (2024-05-29)
+
+
+### Features
+
+* :sparkles: add support for publisher token ([#10](https://github.com/Appcharge/appcharge-checkout-react-sdk/issues/10)) ([a64a875](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/a64a8758b39115b891b68e47c14308543e0a4ae9))
+
 ### [1.1.15](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v1.1.11...v1.1.15) (2024-05-28)
 
 
