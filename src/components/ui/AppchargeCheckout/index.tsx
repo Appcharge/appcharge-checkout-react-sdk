@@ -194,6 +194,20 @@ export interface EventParams {
   reason?: string;
 }
 
+export type AppchargeLocale =
+  | 'en'
+  | 'ru'
+  | 'es'
+  | 'pt'
+  | 'fr'
+  | 'de'
+  | 'it'
+  | 'tr'
+  | 'ja'
+  | 'ko'
+  | 'zh'
+  | 'ar';
+
 export enum EFEEvent {
   ORDER_CREATED = 'appcharge_order_created',
   PAYMENT_INTENT_SUCCESS = 'appcharge_payment_intent_success',
@@ -216,6 +230,7 @@ export interface AppchargeCheckoutProps {
   referrerUrl: string;
   sourceVersion?: string;
   publisherToken?: string;
+  locale: AppchargeLocale;
   onOpen?: () => void;
   onClose?: (params: Partial<EventParams>) => void;
   onInitialLoad?: () => void;
@@ -231,6 +246,7 @@ function AppchargeCheckout({
   sessionToken,
   sourceVersion,
   publisherToken = '',
+  locale,
   onClose,
   onOpen,
   onInitialLoad,
@@ -290,7 +306,9 @@ function AppchargeCheckout({
   ]);
 
   const sdkVersion = 'process.env.sdkVersion';
-  const queryParams = `sdk-version=react-${sdkVersion}&source-version=${sourceVersion || ''}&publisher-token=${publisherToken}`;
+  const queryParams = `sdk-version=react-${sdkVersion}&source-version=${
+    sourceVersion || ''
+  }&publisher-token=${publisherToken}${locale ? `&locale=${locale}` : ''}`;
 
   const url = `${checkoutUrl}/${sessionToken}?${queryParams}`; // https://checkout-v2.appcharge.com
 
