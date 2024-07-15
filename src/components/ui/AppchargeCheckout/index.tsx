@@ -230,7 +230,7 @@ export interface AppchargeCheckoutProps {
   referrerUrl: string;
   sourceVersion?: string;
   publisherToken?: string;
-  locale: AppchargeLocale;
+  locale?: AppchargeLocale;
   onOpen?: () => void;
   onClose?: (params: Partial<EventParams>) => void;
   onInitialLoad?: () => void;
@@ -246,7 +246,7 @@ function AppchargeCheckout({
   sessionToken,
   sourceVersion,
   publisherToken = '',
-  locale,
+  locale = 'en',
   onClose,
   onOpen,
   onInitialLoad,

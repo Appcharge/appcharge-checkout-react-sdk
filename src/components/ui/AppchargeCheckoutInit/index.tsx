@@ -13,14 +13,14 @@ const APPCHARGE_CHECKOUT_THEME = 'ac_co_theme';
 function AppchargeCheckoutInit({
   environment = 'sandbox',
   domain = window.location.host,
-  publisherToken = "",
+  publisherToken = '',
 }: AppchargeCheckoutInitProps) {
   const env = environment === 'prod' ? '' : `-${environment}`;
 
   useEffect(() => {
     fetch(`https://api${env}.appcharge.com/checkout/v1/${domain}/boot`, {
       headers: {
-        'x-checkout-token': publisherToken
+        'x-checkout-token': publisherToken,
       },
     })
       .then((res) => res.json())
