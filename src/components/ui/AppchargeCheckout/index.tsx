@@ -231,6 +231,7 @@ export interface AppchargeCheckoutProps {
   sourceVersion?: string;
   publisherToken?: string;
   locale?: AppchargeLocale;
+  playerId?: string;
   onOpen?: () => void;
   onClose?: (params: Partial<EventParams>) => void;
   onInitialLoad?: () => void;
@@ -243,6 +244,7 @@ export interface AppchargeCheckoutProps {
 
 function AppchargeCheckout({
   checkoutUrl,
+  playerId,
   sessionToken,
   sourceVersion,
   publisherToken = '',
@@ -308,7 +310,7 @@ function AppchargeCheckout({
   const sdkVersion = 'process.env.sdkVersion';
   const queryParams = `sdk-version=react-${sdkVersion}&source-version=${
     sourceVersion || ''
-  }&publisher-token=${publisherToken}${locale ? `&locale=${locale}` : ''}`;
+  }&publisher-token=${publisherToken}${locale ? `&locale=${locale}` : ''}${playerId ? `&player_id=${playerId}` : ''}`;
 
   const url = `${checkoutUrl}/${sessionToken}?${queryParams}`; // https://checkout-v2.appcharge.com
 
