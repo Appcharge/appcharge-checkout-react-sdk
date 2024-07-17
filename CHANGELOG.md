@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v1.2.0...v1.3.0) (2024-07-17)
+
+
+### Features
+
+* :sparkles: added player ID prop ([#12](https://github.com/Appcharge/appcharge-checkout-react-sdk/issues/12)) ([fea521a](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/fea521a034c2e08bae94ca5900b229f341537cfa))
+
 ## [1.2.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v1.1.15...v1.2.0) (2024-05-29)
 
 
