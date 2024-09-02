@@ -9,11 +9,11 @@ export interface AppchargeCheckoutInitProps {
 
 function AppchargeCheckoutInit({
   environment = 'sandbox',
-  domain = window.location.host,
   checkoutToken,
+  domain = window.location.host,
 }: AppchargeCheckoutInitProps) {
-  
   const env = environment === 'prod' ? '' : `-${environment}`;
+  
   if (!checkoutToken) {
       throw Error('checkoutToken prop is missing in AppchargeCheckoutInit component')
   }
