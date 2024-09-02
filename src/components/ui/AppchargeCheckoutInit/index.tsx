@@ -1,43 +1,26 @@
-import { useEffect } from 'react';
 import './styles.scss';
 
 export interface AppchargeCheckoutInitProps {
   sandbox?: boolean;
   domain?: string;
-  publisherToken?: string;
+  checkoutToken: string;
   environment?: 'dev' | 'sandbox' | 'prod';
 }
-
-const APPCHARGE_CHECKOUT_THEME = 'ac_co_theme';
 
 function AppchargeCheckoutInit({
   environment = 'sandbox',
   domain = window.location.host,
-  publisherToken = '',
+  checkoutToken,
 }: AppchargeCheckoutInitProps) {
   const env = environment === 'prod' ? '' : `-${environment}`;
 
-  useEffect(() => {
-    fetch(`https://api${env}.appcharge.com/checkout/v1/${domain}/boot`, {
-      headers: {
-        'x-checkout-token': publisherToken,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        localStorage.setItem(
-          APPCHARGE_CHECKOUT_THEME,
-          JSON.stringify({ theme: data.theme, pks: data.pks })
-        );
-      })
-      .catch((err) => {
-        localStorage.removeItem(APPCHARGE_CHECKOUT_THEME);
-      });
-  }, [domain, env, publisherToken]);
+  if (!checkoutToken) {
+      throw Error('checkoutToken prop is missing in AppchargeCheckoutInit component')
+  }
 
   return (
     <iframe
-      src={`https://checkout-v2${env}.appcharge.com/handshake`}
+      src={`https://checkout-v2${env}.appcharge.com/handshake?checkout-token=${checkoutToken}`}
       className="iframe-transparent"
       title="checkout-transparent"
     ></iframe>
