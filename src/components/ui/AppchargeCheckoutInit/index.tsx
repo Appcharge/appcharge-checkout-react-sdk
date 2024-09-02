@@ -12,8 +12,8 @@ function AppchargeCheckoutInit({
   domain = window.location.host,
   checkoutToken,
 }: AppchargeCheckoutInitProps) {
+  
   const env = environment === 'prod' ? '' : `-${environment}`;
-
   if (!checkoutToken) {
       throw Error('checkoutToken prop is missing in AppchargeCheckoutInit component')
   }
