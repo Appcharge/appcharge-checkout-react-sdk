@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import './styles.scss';
 
 export interface Product {
@@ -229,7 +229,7 @@ export interface AppchargeCheckoutProps {
   sessionToken: string;
   referrerUrl: string;
   sourceVersion?: string;
-  publisherToken?: string;
+  checkoutToken: string;
   locale?: AppchargeLocale;
   playerId?: string;
   onOpen?: () => void;
@@ -247,7 +247,7 @@ function AppchargeCheckout({
   playerId,
   sessionToken,
   sourceVersion,
-  publisherToken = '',
+  checkoutToken,
   locale = 'en',
   onClose,
   onOpen,
@@ -258,11 +258,6 @@ function AppchargeCheckout({
   onOrderCompletedFailed,
   onOrderCompletedSuccessfully,
 }: AppchargeCheckoutProps) {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  const sendIframeMessage = (iframe: HTMLIFrameElement, message: FEMessage) => {
-    iframe.contentWindow?.postMessage(message, checkoutUrl);
-  };
 
   useEffect(() => {
     const eventHandler = (massageEvent: MessageEvent<FEMessage>) => {
@@ -307,12 +302,16 @@ function AppchargeCheckout({
     onOrderCompletedSuccessfully,
   ]);
 
+  if (!checkoutToken) {
+    throw Error('checkoutToken prop is missing in AppchargeCheckout component');
+  } 
+
   const sdkVersion = 'process.env.sdkVersion';
   const queryParams = `sdk-version=react-${sdkVersion}&source-version=${
     sourceVersion || ''
-  }&publisher-token=${publisherToken}${locale ? `&locale=${locale}` : ''}${playerId ? `&player_id=${playerId}` : ''}`;
+  }&checkout-token=${checkoutToken}${locale ? `&locale=${locale}` : ''}${playerId ? `&player_id=${playerId}` : ''}`;
 
-  const url = `${checkoutUrl}/${sessionToken}?${queryParams}`; // https://checkout-v2.appcharge.com
+  const url = `${checkoutUrl}/${sessionToken}?${queryParams}`;
 
   return (
     <iframe
@@ -320,17 +319,7 @@ function AppchargeCheckout({
       className="iframe"
       title="checkout"
       allow="payment *"
-      ref={iframeRef}
-      onLoad={() => {
-        iframeRef.current &&
-          sendIframeMessage(iframeRef.current, {
-            event: EFEEvent.APPCHARGE_THEME,
-            params:
-              localStorage.getItem('ac_co_theme') &&
-              JSON.parse(localStorage.getItem('ac_co_theme') || 'null'),
-          });
-        onInitialLoad?.();
-      }}
+      onLoad={() => onInitialLoad?.()}
     ></iframe>
   );
 }
