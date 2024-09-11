@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v1.3.2...v2.0.0) (2024-09-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* publisherToken prop renamed to checkoutToken and is now mandatory
+
+* :recycle: remove boot init call, change publisherToken prop name ([#17](https://github.com/Appcharge/appcharge-checkout-react-sdk/issues/17)) ([a836a63](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/a836a6344336a7cbdbb85c253f615b05c24b5ae5))
+
 ### [1.3.2](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v1.3.0...v1.3.2) (2024-07-21)
 
 ## [1.3.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v1.2.0...v1.3.0) (2024-07-17)
