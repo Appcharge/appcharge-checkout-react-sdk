@@ -194,20 +194,6 @@ export interface EventParams {
   reason?: string;
 }
 
-export type AppchargeLocale =
-  | 'en'
-  | 'ru'
-  | 'es'
-  | 'pt'
-  | 'fr'
-  | 'de'
-  | 'it'
-  | 'tr'
-  | 'ja'
-  | 'ko'
-  | 'zh'
-  | 'ar';
-
 export enum EFEEvent {
   ORDER_CREATED = 'appcharge_order_created',
   PAYMENT_INTENT_SUCCESS = 'appcharge_payment_intent_success',
@@ -230,7 +216,7 @@ export interface AppchargeCheckoutProps {
   referrerUrl: string;
   sourceVersion?: string;
   checkoutToken: string;
-  locale?: AppchargeLocale;
+  locale?: string;
   playerId?: string;
   onOpen?: () => void;
   onClose?: (params: Partial<EventParams>) => void;
@@ -248,7 +234,7 @@ function AppchargeCheckout({
   sessionToken,
   sourceVersion,
   checkoutToken,
-  locale = 'en',
+  locale,
   onClose,
   onOpen,
   onInitialLoad,
@@ -258,7 +244,6 @@ function AppchargeCheckout({
   onOrderCompletedFailed,
   onOrderCompletedSuccessfully,
 }: AppchargeCheckoutProps) {
-
   useEffect(() => {
     const eventHandler = (massageEvent: MessageEvent<FEMessage>) => {
       if (massageEvent.origin !== checkoutUrl) return;
@@ -304,12 +289,14 @@ function AppchargeCheckout({
 
   if (!checkoutToken) {
     throw Error('checkoutToken prop is missing in AppchargeCheckout component');
-  } 
+  }
 
   const sdkVersion = 'process.env.sdkVersion';
   const queryParams = `sdk-version=react-${sdkVersion}&source-version=${
     sourceVersion || ''
-  }&checkout-token=${checkoutToken}${locale ? `&locale=${locale}` : ''}${playerId ? `&player_id=${playerId}` : ''}`;
+  }&checkout-token=${checkoutToken}${locale ? `&locale=${locale}` : ''}${
+    playerId ? `&player_id=${playerId}` : ''
+  }`;
 
   const url = `${checkoutUrl}/${sessionToken}?${queryParams}`;
 
