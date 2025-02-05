@@ -7,174 +7,6 @@ export interface Product {
   amount: string | number;
 }
 
-interface StoreTheme {
-  publisherId: string;
-  general: {
-    logo: string;
-    logoSize: string;
-    backgroundImageMobile: string;
-    backgroundImageDesktop: string;
-    font: string;
-    buttonColor: {
-      gradientDirection: string;
-      colorOne: string;
-      colorTwo: string;
-    };
-    buttonTextColor: string;
-    favicon: string;
-    bundlesViewModel: string;
-    bundlesInternalViewModel: string;
-    specialOffersViewModel: string;
-    specialOffersInternalViewModel: string;
-    productsQuantityFormat: {
-      milSeparator: string;
-      fractionalSeparator: string;
-      thousandShorthand: boolean;
-      millionShorthand: boolean;
-      billionShorthand: boolean;
-    };
-    balanceQuantityFormat: {
-      milSeparator: string;
-      fractionalSeparator: string;
-      thousandShorthand: boolean;
-      millionShorthand: boolean;
-      billionShorthand: boolean;
-    };
-    numbersOfBundlesToDisplayDesktop: number;
-    numbersOfBundlesToDisplayMobile: number;
-    bottomStoreContent: any[]; // You may want to replace 'any' with a more specific type
-  };
-  login: {
-    text: string;
-    font: string;
-    textColor: string;
-    textSize: number;
-    textWeight: string;
-  };
-  storeScreen: {
-    bundleBorderColor: {
-      gradientDirection: string;
-      colorOne: string;
-      colorTwo: string;
-    };
-    borderRadius: number;
-    noOffersMessageText: string;
-    noOffersTitleText: string;
-  };
-  paymentScreen: {
-    headerText: string;
-    headerColor: {
-      gradientDirection: string;
-      colorOne: string;
-      colorTwo: string;
-    };
-    headerSize: number;
-    text: string;
-    textColor: string;
-    textSize: number;
-    popupColor: {
-      gradientDirection: string;
-      colorOne: string;
-      colorTwo: string;
-    };
-    popupBorderColor: {
-      gradientDirection: string;
-      colorOne: string;
-      colorTwo: string;
-    };
-  };
-  loaderScreen: {
-    headerText: string;
-    headerColor: {
-      gradientDirection: string;
-      colorOne: string;
-      colorTwo: string;
-    };
-    headerSize: number;
-    text: string;
-    textColor: string;
-    textSize: number;
-    headerWeight: string;
-    textWeight: string;
-  };
-  completedScreen: {
-    headerText: string;
-    headerColor: {
-      gradientDirection: string;
-      colorOne: string;
-      colorTwo: string;
-    };
-    headerSize: number;
-    text: string;
-    textColor: string;
-    textSize: number;
-    backToStoreText: string;
-    headerWeight: string;
-    textWeight: string;
-    backToGameButtonText: string;
-  };
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
-
-interface Integration {
-  playersAuthentication: {
-    usernamePasswordOn: boolean;
-    userTokenOn: boolean;
-    googleAppId: string;
-    googleOn: boolean;
-    appleAppId: string;
-    appleOn: boolean;
-    userTokenText: string;
-    userTokenUrl: string;
-    fbAppId: string;
-    fbOn: boolean;
-    otpLinks: any[]; // You may want to replace 'any' with a more specific type
-    appleResponseType: string;
-  };
-  deepLinks: {
-    platform: string;
-    deepLink: string;
-  }[];
-  googleAnalyticsMeasurementId: string;
-  logRocketPublisherId: string;
-  logRocketAppId: string;
-  shouldUseLogRocket: boolean;
-  supportUrl: string;
-  backToGameButtonOn: boolean;
-  backToStoreButtonOn: boolean;
-}
-
-interface Publisher {
-  termsAndConditionsUrl: string;
-  privacyPolicyUrl: string;
-  supportMail: string;
-  storeTabName: string;
-}
-
-interface ExternalServicesConfig {
-  mixpanelActive: boolean;
-  gaActive: boolean;
-  logRocketActive: boolean;
-}
-
-interface SupportConfiguration {
-  externalSupportUrl: string;
-  supportModel: string;
-  preLoginSnippet: string;
-  postLoginSnippet: string;
-}
-
-export interface Boot {
-  storeTheme: StoreTheme;
-  integration: Integration;
-  publisher: Publisher;
-  externalServicesConfig: ExternalServicesConfig;
-  featureFlags: Record<string, any>; // You may want to replace 'any' with a more specific type
-  supportConfiguration: SupportConfiguration;
-}
-
 export interface EventParams {
   orderId: string;
   orderExternalId: string;
@@ -210,6 +42,8 @@ interface FEMessage {
   params: any;
 }
 
+export type Mode = 'mobile-sdk'
+
 export interface AppchargeCheckoutProps {
   checkoutUrl: string;
   sessionToken: string;
@@ -218,6 +52,7 @@ export interface AppchargeCheckoutProps {
   checkoutToken: string;
   locale?: string;
   playerId?: string;
+  mode?: Mode;
   onOpen?: () => void;
   onClose?: (params: Partial<EventParams>) => void;
   onInitialLoad?: () => void;
@@ -235,6 +70,7 @@ function AppchargeCheckout({
   sourceVersion,
   checkoutToken,
   locale,
+  mode,
   onClose,
   onOpen,
   onInitialLoad,
@@ -296,7 +132,7 @@ function AppchargeCheckout({
     sourceVersion || ''
   }&checkout-token=${checkoutToken}${locale ? `&locale=${locale}` : ''}${
     playerId ? `&player_id=${playerId}` : ''
-  }`;
+  }${mode ? `&mode=${mode}` : ''}`;
 
   const url = `${checkoutUrl}/${sessionToken}?${queryParams}`;
 
