@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v3.0.0...v3.1.0) (2025-02-05)
+
+
+### Features
+
+* :sparkles: add mode prop ([#18](https://github.com/Appcharge/appcharge-checkout-react-sdk/issues/18)) ([cbc9caa](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/cbc9caa003c8081ae32ed6e945d71751f44fc811))
+
 ## [3.0.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v1.3.2...v3.0.0) (2024-09-11)
 
 
