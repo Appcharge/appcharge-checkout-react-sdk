@@ -44,6 +44,10 @@ interface FEMessage {
 
 export type Mode = 'mobile-sdk'
 
+export type CheckoutStyle = {
+  overlayBackgroundColor?: string;
+}
+
 export interface AppchargeCheckoutProps {
   checkoutUrl: string;
   sessionToken: string;
@@ -53,6 +57,7 @@ export interface AppchargeCheckoutProps {
   locale?: string;
   playerId?: string;
   mode?: Mode;
+  checkoutStyle?: CheckoutStyle;
   onOpen?: () => void;
   onClose?: (params: Partial<EventParams>) => void;
   onInitialLoad?: () => void;
@@ -71,6 +76,7 @@ function AppchargeCheckout({
   checkoutToken,
   locale,
   mode,
+  checkoutStyle,
   onClose,
   onOpen,
   onInitialLoad,
@@ -134,7 +140,9 @@ function AppchargeCheckout({
     playerId ? `&player_id=${playerId}` : ''
   }${mode ? `&mode=${mode}` : ''}`;
 
-  const url = `${checkoutUrl}/${sessionToken}?${queryParams}`;
+  const checkoutStyleParams = checkoutStyle ? `&overlay-background-color=${checkoutStyle.overlayBackgroundColor || ''}` : '';
+
+  const url = `${checkoutUrl}/${sessionToken}?${queryParams}${checkoutStyleParams}`;
 
   return (
     <iframe
