@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v3.1.1...v3.2.0) (2025-03-03)
+
+
+### Features
+
+* :sparkles: add support for checkout background color ([#19](https://github.com/Appcharge/appcharge-checkout-react-sdk/issues/19)) ([31c6cef](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/31c6cefd07cb1f43aa5dd75689a7ccc0bc592008))
+
 ### [3.1.1](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v3.1.0...v3.1.1) (2025-02-05)
 
 ## [3.1.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v3.0.0...v3.1.0) (2025-02-05)
