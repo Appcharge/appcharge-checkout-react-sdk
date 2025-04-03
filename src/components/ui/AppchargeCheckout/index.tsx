@@ -48,6 +48,10 @@ export type CheckoutStyle = {
   overlayBackgroundColor?: string;
 }
 
+export type Customization = {
+  expandProductList?: boolean;
+}
+
 export interface AppchargeCheckoutProps {
   checkoutUrl: string;
   sessionToken: string;
@@ -58,6 +62,7 @@ export interface AppchargeCheckoutProps {
   playerId?: string;
   mode?: Mode;
   checkoutStyle?: CheckoutStyle;
+  customization?: Customization;
   onOpen?: () => void;
   onClose?: (params: Partial<EventParams>) => void;
   onInitialLoad?: () => void;
@@ -77,6 +82,7 @@ function AppchargeCheckout({
   locale,
   mode,
   checkoutStyle,
+  customization,
   onClose,
   onOpen,
   onInitialLoad,
@@ -142,7 +148,13 @@ function AppchargeCheckout({
 
   const checkoutStyleParams = checkoutStyle ? `&overlay-background-color=${checkoutStyle.overlayBackgroundColor || ''}` : '';
 
-  const url = `${checkoutUrl}/${sessionToken}?${queryParams}${checkoutStyleParams}`;
+  // new customization params, align other query param logic to be the same using URLSearchParams
+  let customizationSearchParams = '';
+  try {
+    customizationSearchParams = customization ? new URLSearchParams({customization: JSON.stringify(customization)}).toString() : '';
+  } catch {
+  }
+  const url = `${checkoutUrl}/${sessionToken}?${queryParams}${checkoutStyleParams}&${customizationSearchParams}`;
 
   return (
     <iframe
