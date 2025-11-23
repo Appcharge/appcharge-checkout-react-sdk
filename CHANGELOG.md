@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v3.3.0...v4.0.0) (2025-11-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* :sparkles: add support for parsed url property, remove init and sessionToken (#21)
+
+### Features
+
+* :sparkles: add support for parsed url property, remove init and sessionToken ([#21](https://github.com/Appcharge/appcharge-checkout-react-sdk/issues/21)) ([43dff09](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/43dff093053adab011d0b58791e3ef21867f7892))
+
 ## [3.3.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v3.2.0...v3.3.0) (2025-04-03)
 
 
