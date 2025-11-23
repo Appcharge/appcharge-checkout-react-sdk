@@ -54,10 +54,8 @@ export type Customization = {
 
 export interface AppchargeCheckoutProps {
   checkoutUrl: string;
-  sessionToken: string;
   referrerUrl: string;
   sourceVersion?: string;
-  checkoutToken: string;
   locale?: string;
   playerId?: string;
   mode?: Mode;
@@ -76,9 +74,7 @@ export interface AppchargeCheckoutProps {
 function AppchargeCheckout({
   checkoutUrl,
   playerId,
-  sessionToken,
   sourceVersion,
-  checkoutToken,
   locale,
   mode,
   checkoutStyle,
@@ -92,9 +88,11 @@ function AppchargeCheckout({
   onOrderCompletedFailed,
   onOrderCompletedSuccessfully,
 }: AppchargeCheckoutProps) {
+
   useEffect(() => {
     const eventHandler = (massageEvent: MessageEvent<FEMessage>) => {
-      if (massageEvent.origin !== checkoutUrl) return;
+      const checkoutBaseUrl = getCheckoutBaseUrl(checkoutUrl);
+      if (massageEvent.origin !== checkoutBaseUrl) return;
       const { params, event } = massageEvent.data;
       switch (event) {
         case EFEEvent.ORDER_CREATED:
@@ -135,36 +133,74 @@ function AppchargeCheckout({
     onOrderCompletedSuccessfully,
   ]);
 
-  if (!checkoutToken) {
-    throw Error('checkoutToken prop is missing in AppchargeCheckout component');
-  }
-
   const sdkVersion = 'process.env.sdkVersion';
-  const queryParams = `sdk-version=react-${sdkVersion}&source-version=${
-    sourceVersion || ''
-  }&checkout-token=${checkoutToken}${locale ? `&locale=${locale}` : ''}${
-    playerId ? `&player_id=${playerId}` : ''
-  }${mode ? `&mode=${mode}` : ''}`;
-
-  const checkoutStyleParams = checkoutStyle ? `&overlay-background-color=${checkoutStyle.overlayBackgroundColor || ''}` : '';
-
-  // new customization params, align other query param logic to be the same using URLSearchParams
-  let customizationSearchParams = '';
-  try {
-    customizationSearchParams = customization ? new URLSearchParams({customization: JSON.stringify(customization)}).toString() : '';
-  } catch {
-  }
-  const url = `${checkoutUrl}/${sessionToken}?${queryParams}${checkoutStyleParams}&${customizationSearchParams}`;
+  const checkoutUrlWithParams = buildURLWithQueryParams(checkoutUrl, {
+    sdkVersion,
+    sourceVersion,
+    locale,
+    playerId,
+    mode,
+    checkoutStyle,
+    customization,
+  });
 
   return (
     <iframe
-      src={url}
+      src={checkoutUrlWithParams}
       className="iframe"
       title="checkout"
       allow="payment *"
       onLoad={() => onInitialLoad?.()}
     ></iframe>
   );
+}
+
+function getCheckoutBaseUrl(checkoutUrl: string) {
+  const { origin } = new URL(checkoutUrl);
+  return origin;
+}
+
+interface CheckoutURLQueryParams {
+  sdkVersion: string;
+  sourceVersion?: string;
+  locale?: string;
+  playerId?: string;
+  mode?: Mode;
+  checkoutStyle?: CheckoutStyle;
+  customization?: Customization;
+}
+
+function buildURLWithQueryParams(checkoutUrl: string, params: CheckoutURLQueryParams): string {
+  const url = new URL(checkoutUrl);
+
+  // Required params
+  url.searchParams.set('sdk-version', `react-${params.sdkVersion}`);
+
+  // Optional params
+  if (params.sourceVersion) {
+    url.searchParams.set('source-version', params.sourceVersion);
+  }
+  if (params.locale) {
+    url.searchParams.set('locale', params.locale);
+  }
+  if (params.playerId) {
+    url.searchParams.set('player_id', params.playerId);
+  }
+  if (params.mode) {
+    url.searchParams.set('mode', params.mode);
+  }
+  if (params.checkoutStyle?.overlayBackgroundColor) {
+    url.searchParams.set('overlay-background-color', params.checkoutStyle.overlayBackgroundColor);
+  }
+  if (params.customization) {
+    try {
+      url.searchParams.set('customization', JSON.stringify(params.customization));
+    } catch {
+      // Silently fail if customization cannot be stringified
+    }
+  }
+
+  return url.toString();
 }
 
 export default AppchargeCheckout;

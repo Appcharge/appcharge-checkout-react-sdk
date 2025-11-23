@@ -14,11 +14,15 @@ export interface PricePoints {
 
 export async function getPricePoints(
   environment: "sandbox" | "prod" = "sandbox",
-  domain: string = window.location.host
+  checkoutPublicKey: string
 ): Promise<PricePoints> {
   const env = environment === "prod" ? "" : `-${environment}`;
-  const apiUrl = `https://api${env}.appcharge.com/checkout/v1/${domain}/pricingPoints`;
-  const pricePointsResponse = await fetch(apiUrl);
+  const apiUrl = `https://api${env}.appcharge.com/checkout/v3/pricingPoints`;
+  const pricePointsResponse = await fetch(apiUrl, {
+    headers: {
+      'x-checkout-token': checkoutPublicKey,
+    },
+  });
   const pricePoints = await pricePointsResponse.json();
   if (!pricePointsResponse.ok) {
     throw (pricePoints as any)?.message;
