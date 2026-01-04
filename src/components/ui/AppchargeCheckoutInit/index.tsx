@@ -13,7 +13,7 @@ function AppchargeCheckoutInit({
   environment = 'sandbox',
   domain = window.location.host,
 }: AppchargeCheckoutInitProps) {
-  const env = environment === 'prod' ? '' : `-${environment}`;
+  const env = environment === 'prod' ? '' : `${environment}`;
 
   useEffect(() => {
     fetch(`https://api${env}.appcharge.com/checkout/v1/${domain}/boot`)
