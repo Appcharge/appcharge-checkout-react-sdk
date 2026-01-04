@@ -31,7 +31,7 @@ function AppchargeCheckoutInit({
 
   return (
     <iframe
-      src={`https://checkout-v2${env}.appcharge.com/handshake`}
+      src={`https://checkout-frontend-${env}.dev.appcharge-int.com/handshake`}
       className="iframe-transparent"
       title="checkout-transparent"
     ></iframe>
