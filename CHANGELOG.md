@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.0.0...v4.1.0) (2026-03-04)
+
+
+### Features
+
+* :sparkles: add new onPaymentIntent event ([#23](https://github.com/Appcharge/appcharge-checkout-react-sdk/issues/23)) ([fd6f4d1](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/fd6f4d1c9f63a71afcce16b679cd7a30097680b9))
+
 ## [4.0.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v3.3.0...v4.0.0) (2025-11-23)
 
 
