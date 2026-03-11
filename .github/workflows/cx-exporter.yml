@@ -13,5 +13,5 @@ jobs:
     with:
       source_branch: ${{ github.ref_name }}
     secrets:
-      CORALOGIX_API_KEY: ${{ secrets.CORALOGIX_API_KEY }}
-      CORALOGIX_API_KEY_NP: ${{ secrets.CORALOGIX_API_KEY_NP }}
+      CORALOGIX_API_KEY: ${{ secrets.CORALOGIX_API_KEY_EXPORTER }}
+      CORALOGIX_API_KEY_NP: ${{ secrets.CORALOGIX_API_KEY_NP_EXPORTER }}
