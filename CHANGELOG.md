@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.1.1](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.1.0...v4.1.1) (2026-03-30)
+
+
+### Bug Fixes
+
+* :bug: Patch vulnerabilities ([#26](https://github.com/Appcharge/appcharge-checkout-react-sdk/issues/26)) ([ee192d2](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/ee192d2501537e8fcefa55917bdae05f7ea386d5))
+
 ## [4.1.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.0.0...v4.1.0) (2026-03-04)
 
 
