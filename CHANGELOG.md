@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.1.1...v4.2.0) (2026-05-26)
+
+
+### Features
+
+* add checkout iframe preload for faster load times ([#27](https://github.com/Appcharge/appcharge-checkout-react-sdk/issues/27)) ([334dd73](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/334dd7346d3715b26568c371ec70894d9fafb06c))
+
 ### [4.1.1](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.1.0...v4.1.1) (2026-03-30)
 
 
