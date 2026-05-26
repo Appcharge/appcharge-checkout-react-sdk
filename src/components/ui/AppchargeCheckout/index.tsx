@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { preconnectCheckout, PAYMENT_SDK_ORIGINS } from '../../../utils/preconnect';
 import './styles.scss';
 
 export interface Product {
@@ -103,17 +104,16 @@ function AppchargeCheckout({
 }: AppchargeCheckoutProps) {
   const visibleRef = useRef(visible);
   const pendingOpenRef = useRef(false);
-  const mountTime = useRef(performance.now());
 
-  const sdkLog = (msg: string) => {
-    const elapsed = (performance.now() - mountTime.current).toFixed(0);
-    console.log(`[AppchargeSDK +${elapsed}ms] ${msg}`);
-  };
-
+  // Auto-preconnect to checkout origin + all known payment/API sub-resource
+  // origins on mount. The checkout iframe is loading in parallel — by the time
+  // its JS requests Stripe/Adyen/Braintree/Nuvei, DNS is already resolved.
   useEffect(() => {
-    mountTime.current = performance.now();
-    sdkLog('component mounted — iframe element will render');
-  }, []);
+    try {
+      preconnectCheckout(checkoutUrl);
+      PAYMENT_SDK_ORIGINS.forEach(preconnectCheckout);
+    } catch { /* never break checkout */ }
+  }, [checkoutUrl]);
 
   useEffect(() => {
     visibleRef.current = visible;
@@ -129,9 +129,6 @@ function AppchargeCheckout({
       if (massageEvent.origin !== checkoutBaseUrl) return;
       const { params, event } = massageEvent.data;
       if (!event) return;
-
-      sdkLog(`postMessage received: ${event}`);
-
       switch (event) {
         case EFEEvent.ORDER_CREATED:
           onOrderCreated?.(params);
@@ -196,12 +193,7 @@ function AppchargeCheckout({
       className={visible ? 'iframe' : 'iframe iframe--hidden'}
       title="checkout"
       allow="payment *"
-      // @ts-expect-error -- fetchPriority is valid HTML but missing from React 18 types
-      fetchPriority="high"
-      onLoad={() => {
-        sdkLog('iframe onLoad fired (HTML document loaded)');
-        onInitialLoad?.();
-      }}
+      onLoad={() => onInitialLoad?.()}
     ></iframe>
   );
 }

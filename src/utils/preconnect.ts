@@ -1,19 +1,30 @@
 /**
- * Warm up the connection to the Appcharge checkout origin so that when the
- * iframe is later mounted, the browser can skip DNS lookup, TCP handshake,
- * and TLS negotiation. Typically saves 100-500ms on first checkout load.
+ * Known third-party origins that the checkout iframe loads internally.
+ * The SDK auto-preconnects to all of these on mount so DNS is already
+ * resolved by the time the checkout JS requests them.
+ */
+export const PAYMENT_SDK_ORIGINS = [
+  // Payment processors
+  'https://js.stripe.com',
+  'https://checkoutshopper-live.adyen.com',
+  'https://checkoutshopper-test.adyen.com',
+  'https://js.braintreegateway.com',
+  'https://assets.braintreegateway.com',
+  'https://cdn.safecharge.com',
+  'https://secure.safecharge.com',
+  // Appcharge APIs
+  'https://api.appcharge.com',
+  'https://ext-stg-api.appchargestore.com',
+];
+
+/**
+ * Inject `<link rel="preconnect">` and `<link rel="dns-prefetch">` for the
+ * given origin. Saves DNS lookup + TCP + TLS (~100-500ms).
  *
- * SAFETY CONTRACT: This function NEVER throws. If anything goes wrong, it
- * silently does nothing. Calling this never blocks or breaks checkout —
- * the main <AppchargeCheckout /> component is fully independent of it.
+ * SAFETY CONTRACT: NEVER throws. If anything goes wrong it silently does
+ * nothing. Checkout is never blocked or broken by this function.
  *
- * Safe to call multiple times — subsequent calls for the same origin are no-ops.
- *
- * @param checkoutUrl Any URL pointing at the checkout origin (only the origin is used).
- *
- * @example
- * // Call once on app/page init, well before the user triggers checkout:
- * preconnectCheckout('https://checkout-v3.appcharge.com');
+ * Idempotent — subsequent calls for the same origin are no-ops.
  */
 export function preconnectCheckout(checkoutUrl: string): void {
   try {
@@ -92,15 +103,7 @@ export function warmupCheckout(checkoutOrigin: string): Promise<void> {
   }
 
   preconnectCheckout(origin);
-
-  const apiOrigins = [
-    'https://ext-stg-api.appchargestore.com',
-    'https://api.appcharge.com',
-    'https://js.stripe.com',
-  ];
-  apiOrigins.forEach(api => {
-    preconnectCheckout(api);
-  });
+  PAYMENT_SDK_ORIGINS.forEach(preconnectCheckout);
 
   warmupPromise = new Promise<void>((resolve) => {
     try {
