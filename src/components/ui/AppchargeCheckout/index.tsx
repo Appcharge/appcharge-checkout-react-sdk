@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { preconnectCheckout } from '../../../utils/preconnect';
 import './styles.scss';
 
@@ -63,15 +63,6 @@ export interface AppchargeCheckoutProps {
   mode?: Mode;
   checkoutStyle?: CheckoutStyle;
   customization?: Customization;
-  /**
-   * Controls iframe visibility. When `false`, the iframe is rendered and
-   * loaded in the background (hidden + non-interactive) so the checkout is
-   * ready to show instantly when flipped to `true`. The buffered
-   * `onOpen` event (if any) fires once `visible` becomes `true`.
-   *
-   * Defaults to `true` (existing behavior — iframe is shown on mount).
-   */
-  visible?: boolean;
   onOpen?: () => void;
   onClose?: (params: Partial<EventParams>) => void;
   onInitialLoad?: () => void;
@@ -91,7 +82,6 @@ function AppchargeCheckout({
   mode,
   checkoutStyle,
   customization,
-  visible = true,
   onClose,
   onOpen,
   onInitialLoad,
@@ -102,30 +92,16 @@ function AppchargeCheckout({
   onOrderCompletedFailed,
   onOrderCompletedSuccessfully,
 }: AppchargeCheckoutProps) {
-  const visibleRef = useRef(visible);
-  const pendingOpenRef = useRef(false);
 
-  // Preconnect to the checkout origin on mount. Payment SDK origins (Stripe,
-  // Adyen, Braintree, Nuvei) are already preconnected at SDK import time via
-  // the module-level side effect in preconnect.ts.
   useEffect(() => {
     try { preconnectCheckout(checkoutUrl); } catch { /* never break checkout */ }
   }, [checkoutUrl]);
-
-  useEffect(() => {
-    visibleRef.current = visible;
-    if (visible && pendingOpenRef.current) {
-      pendingOpenRef.current = false;
-      onOpen?.();
-    }
-  }, [visible, onOpen]);
 
   useEffect(() => {
     const eventHandler = (massageEvent: MessageEvent<FEMessage>) => {
       const checkoutBaseUrl = getCheckoutBaseUrl(checkoutUrl);
       if (massageEvent.origin !== checkoutBaseUrl) return;
       const { params, event } = massageEvent.data;
-      if (!event) return;
       switch (event) {
         case EFEEvent.ORDER_CREATED:
           onOrderCreated?.(params);
@@ -149,11 +125,7 @@ function AppchargeCheckout({
           onClose?.(params);
           break;
         case EFEEvent.CHECKOUT_OPENED:
-          if (visibleRef.current) {
-            onOpen?.();
-          } else {
-            pendingOpenRef.current = true;
-          }
+          onOpen?.();
           break;
       }
     };
@@ -187,7 +159,7 @@ function AppchargeCheckout({
   return (
     <iframe
       src={checkoutUrlWithParams}
-      className={visible ? 'iframe' : 'iframe iframe--hidden'}
+      className="iframe"
       title="checkout"
       allow="payment *"
       onLoad={() => onInitialLoad?.()}
