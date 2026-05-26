@@ -1,23 +1,4 @@
 /**
- * Known third-party origins that the checkout iframe loads internally.
- * The SDK auto-preconnects to all of these on mount so DNS is already
- * resolved by the time the checkout JS requests them.
- */
-export const PAYMENT_SDK_ORIGINS = [
-  // Payment processors
-  'https://js.stripe.com',
-  'https://checkoutshopper-live.adyen.com',
-  'https://checkoutshopper-test.adyen.com',
-  'https://js.braintreegateway.com',
-  'https://assets.braintreegateway.com',
-  'https://cdn.safecharge.com',
-  'https://secure.safecharge.com',
-  // Appcharge APIs
-  'https://api.appcharge.com',
-  'https://ext-stg-api.appchargestore.com',
-];
-
-/**
  * Inject `<link rel="preconnect">` and `<link rel="dns-prefetch">` for the
  * given origin. Saves DNS lookup + TCP + TLS (~100-500ms).
  *
@@ -143,3 +124,24 @@ export function warmupCheckout(checkoutOrigin: string): Promise<void> {
 
   return warmupPromise;
 }
+
+// ---------------------------------------------------------------------------
+// Module-level side effect: auto-preconnect to all known payment/API origins
+// the moment this module is imported. The consumer gets the perf win just by
+// importing the SDK — no extra calls needed.
+// ---------------------------------------------------------------------------
+const PAYMENT_SDK_ORIGINS = [
+  'https://js.stripe.com',
+  'https://checkoutshopper-live.adyen.com',
+  'https://checkoutshopper-test.adyen.com',
+  'https://js.braintreegateway.com',
+  'https://assets.braintreegateway.com',
+  'https://cdn.safecharge.com',
+  'https://secure.safecharge.com',
+  'https://api.appcharge.com',
+  'https://ext-stg-api.appchargestore.com',
+];
+
+try {
+  PAYMENT_SDK_ORIGINS.forEach(preconnectCheckout);
+} catch { /* never break the import */ }

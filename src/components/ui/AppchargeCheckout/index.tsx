@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { preconnectCheckout, PAYMENT_SDK_ORIGINS } from '../../../utils/preconnect';
+import { preconnectCheckout } from '../../../utils/preconnect';
 import './styles.scss';
 
 export interface Product {
@@ -105,14 +105,11 @@ function AppchargeCheckout({
   const visibleRef = useRef(visible);
   const pendingOpenRef = useRef(false);
 
-  // Auto-preconnect to checkout origin + all known payment/API sub-resource
-  // origins on mount. The checkout iframe is loading in parallel — by the time
-  // its JS requests Stripe/Adyen/Braintree/Nuvei, DNS is already resolved.
+  // Preconnect to the checkout origin on mount. Payment SDK origins (Stripe,
+  // Adyen, Braintree, Nuvei) are already preconnected at SDK import time via
+  // the module-level side effect in preconnect.ts.
   useEffect(() => {
-    try {
-      preconnectCheckout(checkoutUrl);
-      PAYMENT_SDK_ORIGINS.forEach(preconnectCheckout);
-    } catch { /* never break checkout */ }
+    try { preconnectCheckout(checkoutUrl); } catch { /* never break checkout */ }
   }, [checkoutUrl]);
 
   useEffect(() => {
