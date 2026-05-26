@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { preconnectCheckout } from '../../../utils/preconnect';
 import './styles.scss';
 
 export interface Product {
@@ -92,10 +91,6 @@ function AppchargeCheckout({
   onOrderCompletedFailed,
   onOrderCompletedSuccessfully,
 }: AppchargeCheckoutProps) {
-
-  useEffect(() => {
-    try { preconnectCheckout(checkoutUrl); } catch { /* never break checkout */ }
-  }, [checkoutUrl]);
 
   useEffect(() => {
     const eventHandler = (massageEvent: MessageEvent<FEMessage>) => {
