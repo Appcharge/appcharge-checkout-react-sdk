@@ -8,3 +8,9 @@
   left: 0;
   z-index: 9999;
 }
+
+.iframe--hidden {
+  visibility: hidden;
+  pointer-events: none;
+  z-index: -1;
+}

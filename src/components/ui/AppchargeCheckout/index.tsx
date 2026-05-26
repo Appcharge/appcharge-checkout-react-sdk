@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import './styles.scss';
 
 export interface Product {
@@ -62,6 +62,15 @@ export interface AppchargeCheckoutProps {
   mode?: Mode;
   checkoutStyle?: CheckoutStyle;
   customization?: Customization;
+  /**
+   * Controls iframe visibility. When `false`, the iframe is rendered and
+   * loaded in the background (hidden + non-interactive) so the checkout is
+   * ready to show instantly when flipped to `true`. The buffered
+   * `onOpen` event (if any) fires once `visible` becomes `true`.
+   *
+   * Defaults to `true` (existing behavior — iframe is shown on mount).
+   */
+  visible?: boolean;
   onOpen?: () => void;
   onClose?: (params: Partial<EventParams>) => void;
   onInitialLoad?: () => void;
@@ -81,6 +90,7 @@ function AppchargeCheckout({
   mode,
   checkoutStyle,
   customization,
+  visible = true,
   onClose,
   onOpen,
   onInitialLoad,
@@ -91,12 +101,37 @@ function AppchargeCheckout({
   onOrderCompletedFailed,
   onOrderCompletedSuccessfully,
 }: AppchargeCheckoutProps) {
+  const visibleRef = useRef(visible);
+  const pendingOpenRef = useRef(false);
+  const mountTime = useRef(performance.now());
+
+  const sdkLog = (msg: string) => {
+    const elapsed = (performance.now() - mountTime.current).toFixed(0);
+    console.log(`[AppchargeSDK +${elapsed}ms] ${msg}`);
+  };
+
+  useEffect(() => {
+    mountTime.current = performance.now();
+    sdkLog('component mounted — iframe element will render');
+  }, []);
+
+  useEffect(() => {
+    visibleRef.current = visible;
+    if (visible && pendingOpenRef.current) {
+      pendingOpenRef.current = false;
+      onOpen?.();
+    }
+  }, [visible, onOpen]);
 
   useEffect(() => {
     const eventHandler = (massageEvent: MessageEvent<FEMessage>) => {
       const checkoutBaseUrl = getCheckoutBaseUrl(checkoutUrl);
       if (massageEvent.origin !== checkoutBaseUrl) return;
       const { params, event } = massageEvent.data;
+      if (!event) return;
+
+      sdkLog(`postMessage received: ${event}`);
+
       switch (event) {
         case EFEEvent.ORDER_CREATED:
           onOrderCreated?.(params);
@@ -120,7 +155,11 @@ function AppchargeCheckout({
           onClose?.(params);
           break;
         case EFEEvent.CHECKOUT_OPENED:
-          onOpen?.();
+          if (visibleRef.current) {
+            onOpen?.();
+          } else {
+            pendingOpenRef.current = true;
+          }
           break;
       }
     };
@@ -154,10 +193,15 @@ function AppchargeCheckout({
   return (
     <iframe
       src={checkoutUrlWithParams}
-      className="iframe"
+      className={visible ? 'iframe' : 'iframe iframe--hidden'}
       title="checkout"
       allow="payment *"
-      onLoad={() => onInitialLoad?.()}
+      // @ts-expect-error -- fetchPriority is valid HTML but missing from React 18 types
+      fetchPriority="high"
+      onLoad={() => {
+        sdkLog('iframe onLoad fired (HTML document loaded)');
+        onInitialLoad?.();
+      }}
     ></iframe>
   );
 }
