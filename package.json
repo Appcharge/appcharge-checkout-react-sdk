@@ -8,7 +8,9 @@
   "types": "lib/index.d.ts",
   "sideEffects": [
     "lib/index.js",
-    "lib/index.esm.js"
+    "lib/index.esm.js",
+    "*.scss",
+    "*.css"
   ],
   "files": [
     "src",
