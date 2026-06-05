@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.3.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.2.0...v4.3.0) (2026-06-05)
+
+
+### Bug Fixes
+
+* restore iframe full-screen styling dropped by tree-shaking ([d59a085](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/d59a0858415a062d098461673f4667927926c6e6))
+
 ## [4.2.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.1.1...v4.2.0) (2026-05-26)
 
 
