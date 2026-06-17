@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.4.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.3.0...v4.4.0) (2026-06-17)
+
+
+### Features
+
+* support React 17 alongside React 18 ([#29](https://github.com/Appcharge/appcharge-checkout-react-sdk/issues/29)) ([b9a26ad](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/b9a26ad6de8bdd6f6dc0fd66582175a25449e953))
+
 ## [4.3.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.2.0...v4.3.0) (2026-06-05)
 
 
