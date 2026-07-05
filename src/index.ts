@@ -15,3 +15,4 @@ export type {
 export { EFEEvent } from './components/ui/AppchargeCheckout';
 export { getPricePoints } from './utils/price-points-util';
 export { preconnectCheckout, warmupCheckout } from './utils/preconnect';
+export { enableLiquidGlassFix, isIos26OrAbove } from './utils/liquid-glass';
