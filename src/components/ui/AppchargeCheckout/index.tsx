@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { enableLiquidGlassFix } from '../../../utils/liquid-glass';
 import './styles.scss';
 
 export interface Product {
@@ -139,6 +140,11 @@ function AppchargeCheckout({
     onOrderCompletedFailed,
     onOrderCompletedSuccessfully,
   ]);
+
+  // iOS 26 Safari "Liquid Glass": on iOS/iPadOS 26+ only, opt the host page into
+  // `viewport-fit=cover` so the full-screen iframe extends behind the translucent
+  // toolbar (no white band). Reverted on unmount; a hard no-op everywhere else.
+  useEffect(() => enableLiquidGlassFix(), []);
 
   const sdkVersion = 'process.env.sdkVersion';
   const checkoutUrlWithParams = buildURLWithQueryParams(checkoutUrl, {
