@@ -1,0 +1,1625 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Checkout SDK Playground</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, sans-serif;
+      background: #0c0a1a;
+      color: #e5e7eb;
+      min-height: 100vh
+    }
+
+    /* ── top bar ── */
+    .topbar {
+      background: #1a1632;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid #2d2854;
+      flex-wrap: wrap
+    }
+
+    .topbar .logo {
+      font-size: 17px;
+      font-weight: 700;
+      color: #a78bfa
+    }
+
+    .topbar .logo span {
+      color: #fbbf24
+    }
+
+    .topbar .warmup-status {
+      margin-left: auto;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-weight: 600
+    }
+
+    .warmup-status.pending {
+      background: #78350f;
+      color: #fbbf24
+    }
+
+    .warmup-status.done {
+      background: #064e3b;
+      color: #34d399
+    }
+
+    .topbar .mode-switch {
+      display: flex;
+      gap: 0;
+      border: 1px solid #374151;
+      border-radius: 6px;
+      overflow: hidden;
+      font-size: 11px
+    }
+
+    .mode-switch button {
+      border: 0;
+      padding: 5px 12px;
+      cursor: pointer;
+      font: inherit;
+      color: #9ca3af;
+      background: #1f2937;
+      transition: all .15s
+    }
+
+    .mode-switch button.active {
+      background: #7c3aed;
+      color: white
+    }
+
+    .topbar .env-group {
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .topbar .env-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: #6b7280;
+      font-weight: 700
+    }
+
+    .topbar .od-env-field {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: #9ca3af
+    }
+
+    .topbar .od-env-field input {
+      width: 130px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e2e8f0;
+      border-radius: 5px;
+      padding: 4px 6px;
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace
+    }
+
+    /* ── settings strip ── */
+    .settings {
+      background: #111827;
+      border-bottom: 1px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      align-items: center;
+      font-size: 12px;
+      color: #9ca3af
+    }
+
+    .settings label {
+      display: inline-flex;
+      gap: 5px;
+      align-items: center
+    }
+
+    .settings select,
+    .settings input[type=text] {
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e2e8f0;
+      border-radius: 5px;
+      padding: 4px 6px;
+      font-size: 12px
+    }
+
+    .settings input[type=text] {
+      width: 180px
+    }
+
+    .settings .mint-btn {
+      padding: 3px 8px;
+      border-radius: 5px;
+      border: 1px solid #374151;
+      background: #1f2937;
+      color: #e2e8f0;
+      cursor: pointer;
+      font-size: 11px
+    }
+
+    /* ── toggles drawer ── */
+    .toggles-bar {
+      background: #0b1220;
+      border-bottom: 1px solid #1f2937;
+      padding: 0 20px
+    }
+
+    .toggles-bar summary {
+      cursor: pointer;
+      padding: 8px 0;
+      font-size: 12px;
+      color: #93c5fd;
+      font-weight: 600;
+      list-style: none
+    }
+
+    .toggles-bar summary::before {
+      content: '▸ ';
+      color: #64748b
+    }
+
+    .toggles-bar[open] summary::before {
+      content: '▾ '
+    }
+
+    .toggles-inner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 18px;
+      padding: 0 0 10px;
+      font-size: 12px
+    }
+
+    .toggle-chip {
+      display: inline-flex;
+      gap: 5px;
+      align-items: center;
+      color: #cbd5e1
+    }
+
+    .toggle-chip small {
+      color: #6b7280;
+      font-size: 10px
+    }
+
+    /* ── template strip ── */
+    .templates {
+      background: #111827;
+      border-bottom: 1px solid #1f2937;
+      padding: 10px 20px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .tmpl-btn {
+      border: 1px solid #374151;
+      background: #1f2937;
+      color: #e2e8f0;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .tmpl-btn:hover {
+      border-color: #7c3aed;
+      background: #2a3445
+    }
+
+    .tmpl-btn.active {
+      border-color: #7c3aed;
+      background: #2d1b69
+    }
+
+    .tmpl-btn .badge {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: .4px
+    }
+
+    .badge-real {
+      background: #14532d;
+      color: #bbf7d0
+    }
+
+    .badge-be {
+      background: #1e3a8a;
+      color: #bfdbfe
+    }
+
+    /* ── shop ── */
+    .shop {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 24px 20px 40px
+    }
+
+    .shop h2 {
+      font-size: 18px;
+      margin-bottom: 4px
+    }
+
+    .shop .sub {
+      color: #9ca3af;
+      font-size: 13px;
+      margin-bottom: 18px
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 14px
+    }
+
+    .product {
+      background: #1a1632;
+      border: 1px solid #2d2854;
+      border-radius: 10px;
+      padding: 18px 14px;
+      text-align: center;
+      transition: border-color .15s, transform .15s;
+      position: relative
+    }
+
+    .product:hover {
+      border-color: #7c3aed;
+      transform: translateY(-2px)
+    }
+
+    .product.featured {
+      border-color: #fbbf24
+    }
+
+    .product.featured::before {
+      content: 'BEST VALUE';
+      position: absolute;
+      top: -9px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fbbf24;
+      color: #0c0a1a;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px
+    }
+
+    .product .icon {
+      font-size: 42px;
+      margin-bottom: 6px
+    }
+
+    .product .name {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 2px
+    }
+
+    .product .items {
+      color: #a78bfa;
+      font-size: 12px;
+      margin-bottom: 10px
+    }
+
+    .product .price-tag {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fbbf24;
+      margin-bottom: 10px
+    }
+
+    .product .price-tag .old {
+      font-size: 12px;
+      color: #6b7280;
+      text-decoration: line-through;
+      margin-right: 5px;
+      font-weight: 400
+    }
+
+    .product button {
+      width: 100%;
+      padding: 8px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      border: 0;
+      border-radius: 7px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #059669, #047857);
+      color: white;
+      transition: opacity .15s
+    }
+
+    .product button:hover {
+      opacity: .9
+    }
+
+    .product button:disabled {
+      background: #374151;
+      cursor: not-allowed;
+      opacity: .6
+    }
+
+    /* ── bottom panels ── */
+    .bottom-panels {
+      display: none;
+      gap: 0;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 10000;
+      max-height: 40vh
+    }
+
+    .panel {
+      flex: 1;
+      background: #1e1b34;
+      border-top: 1px solid #2d2854;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      font-size: 11px;
+      line-height: 1.6;
+      overflow-y: auto;
+      padding: 10px 12px
+    }
+
+    .panel:first-child {
+      border-right: 1px solid #2d2854
+    }
+
+    .panel .title {
+      font-weight: 700;
+      color: #fbbf24;
+      margin-bottom: 3px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .8px
+    }
+
+    .panel .timing {
+      color: #34d399;
+      font-weight: 600
+    }
+
+    .panel .final {
+      color: #34d399;
+      font-weight: 700;
+      font-size: 13px
+    }
+
+    .panel .preload {
+      color: #a78bfa
+    }
+
+    .panel .boot {
+      color: #60a5fa
+    }
+
+    .panel .err {
+      color: #f87171
+    }
+
+    .panel-toggle {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      right: 12px;
+      z-index: 10001;
+      background: #1e1b34;
+      border: 1px solid #2d2854;
+      border-bottom: 0;
+      border-radius: 6px 6px 0 0;
+      padding: 3px 10px;
+      font-size: 10px;
+      color: #9ca3af;
+      cursor: pointer;
+      font-weight: 600
+    }
+
+    #mount {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent
+    }
+
+    #mount.active {
+      background: rgba(0, 0, 0, 0.5)
+    }
+
+    #mount .device-frame {
+      width: 100%;
+      height: 100%;
+      position: relative
+    }
+
+    /*
+     * Device frames. Sizes mirror real device viewports so we exercise the
+     * same media queries the published apps hit:
+     *   - ios-small      iPhone SE / iPhone 8           — 375×667
+     *   - ios            iPhone 14 Pro                  — 390×844
+     *   - ios-max        iPhone 14 Pro Max / 15 Pro Max — 430×932
+     *   - ios-landscape  iPhone 14 Pro landscape        — 844×390
+     *   - android        Pixel 7                        — 412×915
+     *   - android-small  Galaxy S8 / older Android      — 360×640
+     *   - android-landscape Pixel 7 landscape           — 915×412
+     *   - ipad           iPad Air portrait              — 820×1180
+     * Add a new device by adding one block here + one <option> below + one
+     * entry to DEVICE_SIZES / DEVICE_LABELS.
+     */
+    #mount.device-ios-small .device-frame { width: 375px; height: 667px; }
+    #mount.device-ios .device-frame { width: 390px; height: 844px; }
+    #mount.device-ios-max .device-frame { width: 430px; height: 932px; }
+    #mount.device-ios-landscape .device-frame { width: 844px; height: 390px; }
+    #mount.device-android .device-frame { width: 412px; height: 915px; }
+    #mount.device-android-small .device-frame { width: 360px; height: 640px; }
+    #mount.device-android-landscape .device-frame { width: 915px; height: 412px; }
+    #mount.device-ipad .device-frame { width: 820px; height: 1180px; }
+
+    /* Shared chrome for every framed device. */
+    #mount[class*="device-"] .device-frame {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+      position: relative;
+      border: 2px solid #374151;
+      /* On viewports smaller than the device frame (e.g. iPad on a 13"
+       * MacBook, or landscape variants on a 1280-wide laptop), cap the
+       * frame to the viewport so the entire device stays visible. The
+       * AR is preserved by `aspect-ratio: <w>/<h>` per-device below. */
+      max-width: calc(100vw - 32px);
+      max-height: calc(100vh - 96px);
+    }
+
+    /* Aspect-ratio fallback when max-width clamps the explicit width. */
+    #mount.device-ios-small .device-frame { aspect-ratio: 375/667; }
+    #mount.device-ios .device-frame { aspect-ratio: 390/844; }
+    #mount.device-ios-max .device-frame { aspect-ratio: 430/932; }
+    #mount.device-ios-landscape .device-frame { aspect-ratio: 844/390; }
+    #mount.device-android .device-frame { aspect-ratio: 412/915; }
+    #mount.device-android-small .device-frame { aspect-ratio: 360/640; }
+    #mount.device-android-landscape .device-frame { aspect-ratio: 915/412; }
+    #mount.device-ipad .device-frame { aspect-ratio: 820/1180; }
+
+    #mount.device-android .device-frame,
+    #mount.device-android-small .device-frame,
+    #mount.device-android-landscape .device-frame {
+      border-radius: 12px;
+    }
+
+
+    /*
+     * The SDK renders `<iframe className="iframe">` and intentionally ships
+     * with no bundled CSS — real consumers style the iframe themselves (e.g.
+     * a game wraps it in its own modal/overlay). The playground IS the
+     * consumer, so we provide the sizing here. This selector covers desktop
+     * mode (no device-* class) AND every framed device above.
+     */
+    #mount.active iframe,
+    #mount[class*="device-"] iframe {
+      width: 100% !important;
+      height: 100% !important;
+      max-height: 100% !important;
+      border: 0 !important;
+      position: absolute !important;
+      inset: 0 !important
+    }
+
+    body.real-mobile #deviceControl {
+      display: none
+    }
+
+    body.real-mobile #mount.active {
+      background: transparent
+    }
+
+    body.real-mobile #mount .device-frame {
+      width: 100%;
+      height: 100%;
+      position: relative
+    }
+
+    body.real-mobile .shop {
+      padding-bottom: 24px
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── TOP BAR ── -->
+  <div class="topbar">
+    <div class="logo">Checkout <span>Playground</span></div>
+    <div class="env-group">
+      <span class="env-label">Frontend</span>
+      <div class="mode-switch" id="frontendSwitch">
+        <button data-mode="local">Local :3000 (HTTPS)</button>
+        <button data-mode="staging">Staging</button>
+        <button data-mode="od" id="frontendOdBtn">OD</button>
+      </div>
+    </div>
+    <div class="env-group">
+      <span class="env-label">Backend</span>
+      <div class="mode-switch" id="backendSwitch">
+        <button data-backend="staging">Staging</button>
+        <button data-backend="od" id="backendOdBtn">OD</button>
+      </div>
+    </div>
+    <label class="od-env-field">OD env
+      <input type="text" id="odEnv" spellcheck="false" autocomplete="off" placeholder="acdev-22719" />
+    </label>
+    <div class="warmup-status pending" id="warmupBadge">WARMING UP…</div>
+  </div>
+
+  <!-- ── SETTINGS ── -->
+  <div class="settings">
+    <label>Currency <select id="currency">
+        <option value="usd" selected>USD</option>
+        <option value="cad">CAD (Stripe)</option>
+        <option value="aud">AUD (Braintree)</option>
+        <option value="thb">THB (Adyen)</option>
+        <option value="eur">EUR</option>
+        <option value="gbp">GBP (Adyen UK / Affirm)</option>
+        <option value="iqd">IQD (Nuvei)</option>
+        <option value="brl">BRL (Nuvei LATAM)</option>
+        <option value="mxn">MXN (Nuvei LATAM)</option>
+        <option value="ars">ARS (Nuvei LATAM)</option>
+        <option value="clp">CLP (Nuvei LATAM)</option>
+        <option value="cop">COP (Nuvei LATAM)</option>
+        <option value="pen">PEN (Nuvei LATAM)</option>
+        <option value="uyu">UYU (Nuvei LATAM)</option>
+        <option value="crc">CRC (Nuvei LATAM)</option>
+        <option value="gtq">GTQ (Nuvei LATAM)</option>
+        <option value="dop">DOP (Nuvei LATAM)</option>
+      </select></label>
+    <label>Price <input id="price" type="number" min="0" step="1" placeholder="(currency default)" title="Override the session price in MINOR units (e.g. 1550 = $15.50 for 2-decimal currencies; IQD is 3-decimal, so 2000000 = 20,000 IQD). Leave empty to use the per-currency default." style="width:120px" /></label>
+    <label>Language <select id="locale" title="Sets ?locale= on the checkout URL. English is bundled; any other locale is fetched at runtime from the BE translations API (/checkout/translations/languages/<locale>) for the session's publisher. If the publisher has no translations for the chosen language, the checkout falls back to English.">
+        <option value="en" selected>English (en)</option>
+        <option value="es">Spanish (es)</option>
+        <option value="fr">French (fr)</option>
+        <option value="de">German (de)</option>
+        <option value="pt">Portuguese (pt)</option>
+        <option value="it">Italian (it)</option>
+        <option value="nl">Dutch (nl)</option>
+        <option value="pl">Polish (pl)</option>
+        <option value="tr">Turkish (tr)</option>
+        <option value="ru">Russian (ru)</option>
+        <option value="ja">Japanese (ja)</option>
+        <option value="ko">Korean (ko)</option>
+        <option value="zh">Chinese (zh)</option>
+        <option value="ar">Arabic (ar)</option>
+      </select></label>
+    <label>Single-method type <select id="singleMethod" title="Only used by the SINGLE template">
+        <option value="card" selected>card</option>
+        <option value="google">google (Google Pay)</option>
+        <option value="apple">apple (Apple Pay)</option>
+        <option value="paypal">paypal</option>
+      </select></label>
+    <label>Tax Country <select id="country">
+        <option value="">(auto)</option>
+        <option value="US">US</option>
+        <option value="CA">CA</option>
+        <option value="GB">GB</option>
+        <option value="AU">AU</option>
+        <option value="DE">DE</option>
+        <option value="IL">IL</option>
+        <option value="TH">TH</option>
+        <option value="FR">FR</option>
+        <option value="BE">BE</option>
+        <optgroup label="LATAM (Nuvei)">
+          <option value="AR">AR (Argentina)</option>
+          <option value="BO">BO (Bolivia)</option>
+          <option value="BR">BR (Brazil)</option>
+          <option value="CL">CL (Chile)</option>
+          <option value="CO">CO (Colombia)</option>
+          <option value="CR">CR (Costa Rica)</option>
+          <option value="CU">CU (Cuba)</option>
+          <option value="DO">DO (Dominican Republic)</option>
+          <option value="EC">EC (Ecuador)</option>
+          <option value="SV">SV (El Salvador)</option>
+          <option value="GT">GT (Guatemala)</option>
+          <option value="HN">HN (Honduras)</option>
+          <option value="MX">MX (Mexico)</option>
+          <option value="NI">NI (Nicaragua)</option>
+          <option value="PA">PA (Panama)</option>
+          <option value="PY">PY (Paraguay)</option>
+          <option value="PE">PE (Peru)</option>
+          <option value="UY">UY (Uruguay)</option>
+          <option value="VE">VE (Venezuela)</option>
+        </optgroup>
+      </select></label>
+    <label id="deviceControl">Device <select id="device">
+        <option value="desktop" selected>Desktop</option>
+        <optgroup label="iOS — portrait">
+          <option value="ios-small">iPhone SE (375×667)</option>
+          <option value="ios">iPhone 14 Pro (390×844)</option>
+          <option value="ios-max">iPhone 14 Pro Max (430×932)</option>
+        </optgroup>
+        <optgroup label="iOS — landscape">
+          <option value="ios-landscape">iPhone 14 Pro landscape (844×390)</option>
+        </optgroup>
+        <optgroup label="Android — portrait">
+          <option value="android-small">Galaxy S8 (360×640)</option>
+          <option value="android">Pixel 7 (412×915)</option>
+        </optgroup>
+        <optgroup label="Android — landscape">
+          <option value="android-landscape">Pixel 7 landscape (915×412)</option>
+        </optgroup>
+        <optgroup label="Tablet">
+          <option value="ipad">iPad Air (820×1180)</option>
+        </optgroup>
+      </select></label>
+    <label>Customer ID
+      <input type="text" id="customerId" placeholder="blank = random per click" />
+      <button type="button" class="mint-btn" id="mintBtn">Mint</button>
+    </label>
+    <label>Email <span style="color:#6b7280;font-weight:400">(override)</span>
+      <input
+        type="email"
+        id="customerEmail"
+        spellcheck="false"
+        autocomplete="off"
+        placeholder="blank → <customerId>@playground.local · persists (localStorage)" />
+    </label>
+    <label style="grid-column: 1 / -1">Publisher token <span style="color:#6b7280;font-weight:400">(override)</span>
+      <input
+        type="text"
+        id="publisherToken"
+        spellcheck="false"
+        autocomplete="off"
+        placeholder="blank → default (0c71aa29…bba26) · persists across reloads (localStorage)"
+        style="width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;" />
+    </label>
+  </div>
+
+  <!-- ── TOGGLES ── -->
+  <details class="toggles-bar" id="togglesBar">
+    <summary>Toggles &amp; boot overrides <small id="togglesSummary"></small> <small
+        style="color:#6b7280;margin-left:8px">(require checkout-v3 in playground mode: npm run playground)</small>
+    </summary>
+    <div class="toggles-inner" id="togglesList"></div>
+    <div class="toggles-actions-row" style="display:flex;gap:8px;padding:0 0 10px;align-items:center;">
+      <button type="button" id="togglesReset" class="mint-btn">Reset</button>
+      <button type="button" id="togglesAllOn" class="mint-btn">All on</button>
+    </div>
+  </details>
+
+  <!-- ── TEMPLATE STRIP ── -->
+  <div class="templates">
+    <button class="tmpl-btn active" data-tmpl="default">Default <span class="badge badge-real">Real</span></button>
+    <button class="tmpl-btn" data-tmpl="single">Single Method <span class="badge badge-real">Real</span></button>
+    <button class="tmpl-btn" data-tmpl="ftd">FTD <span class="badge badge-be">Real BE</span></button>
+    <button class="tmpl-btn" data-tmpl="last">Last Method <span class="badge badge-be">Real BE</span></button>
+  </div>
+
+  <!-- ── SHOP ── -->
+  <div class="shop">
+    <h2>Special Offers</h2>
+    <p class="sub">Click any offer to create a session and open checkout via the React SDK.</p>
+    <div class="products">
+      <div class="product">
+        <div class="icon">💎</div>
+        <div class="name">Starter Pack</div>
+        <div class="items">1,000 Coins + 50 Gems</div>
+        <div class="price-tag">$4.99</div>
+        <button class="buy-btn" data-sku="StarterPack" data-price="499" data-name="Starter Pack" data-qty="1000">Buy
+          Now</button>
+      </div>
+      <div class="product featured">
+        <div class="icon">🔥</div>
+        <div class="name">Crazy Pack</div>
+        <div class="items">6,580 Coins + 150 Gems + 3 Boosters</div>
+        <div class="price-tag"><span class="old">$19.99</span>$15.50</div>
+        <button class="buy-btn" data-sku="CrazyPack" data-price="1550" data-name="Crazy Pack" data-qty="6580">Buy
+          Now</button>
+      </div>
+      <div class="product">
+        <div class="icon">⚡</div>
+        <div class="name">Power Bundle</div>
+        <div class="items">3,000 Coins + 100 Gems</div>
+        <div class="price-tag">$9.99</div>
+        <button class="buy-btn" data-sku="PowerBundle" data-price="999" data-name="Power Bundle" data-qty="3000">Buy
+          Now</button>
+      </div>
+      <div class="product">
+        <div class="icon">👑</div>
+        <div class="name">VIP Pack</div>
+        <div class="items">15,000 Coins + 500 Gems</div>
+        <div class="price-tag">$49.99</div>
+        <button class="buy-btn" data-sku="VIPPack" data-price="4999" data-name="VIP Pack" data-qty="15000">Buy
+          Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BOTTOM PANELS ── -->
+  <button class="panel-toggle" id="panelToggle">▼ Panels</button>
+  <div class="bottom-panels" id="bottomPanels">
+    <div class="panel" id="metrics">
+      <div class="title">Performance Metrics</div>
+    </div>
+    <div class="panel" id="logPanel">
+      <div class="title">Session / Boot Log</div>
+    </div>
+  </div>
+
+  <!-- ── CHECKOUT MOUNT ── -->
+  <div id="mount"></div>
+
+  <script type="importmap">
+{"imports":{"react":"https://esm.sh/react@18.2.0","react/jsx-runtime":"https://esm.sh/react@18.2.0/jsx-runtime","react-dom/client":"https://esm.sh/react-dom@18.2.0/client"}}
+</script>
+
+  <script type="module">
+    import { createElement } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import { AppchargeCheckout, warmupCheckout, preconnectCheckout } from '../lib/index.esm.js';
+
+    /* ═══════════════════════════════════════════════════════════════
+       CONFIG
+       ═══════════════════════════════════════════════════════════════ */
+    // Two orthogonal axes drive every request:
+    //   1. FRONTEND origin — where the checkout iframe is loaded from
+    //      (the `checkoutMode` switch: local / staging / od).
+    //   2. BACKEND — which API createSession is POSTed to
+    //      (the `backend` switch: staging / od).
+    // "Staging" always means `ext-stg-api.appchargestore.com` (API) +
+    // `pay-staging.appcharge.com` (FE). "OD" means an on-demand env whose
+    // name is typed into the "OD env" input (default `acdev-22719`) and feeds
+    // BOTH the OD gateway createSession host AND the OD pay origin, so picking
+    // OD anywhere routes you to that exact env.
+    const STAGING_API_ORIGIN = 'https://ext-stg-api.appchargestore.com';
+    const STAGING_PAY_ORIGIN = 'https://pay-staging.appcharge.com';
+    // `npm run playground` and `npm run dev` both start Vite with HTTPS
+    // enabled (mkcert), so local must be https://. Using http:// here
+    // caused the iframe to fail to load (mixed-content/connection-refused).
+    const LOCAL_PAY_ORIGIN = 'https://127.0.0.1:3000';
+    const OD_ENV_DEFAULT = 'acdev-22719';
+    // OD on-demand env hosts, derived live from the typed env name so a new
+    // env (e.g. acdev-99999) only has to be entered once in the input.
+    const odEnv = () => ($('odEnv')?.value.trim() || OD_ENV_DEFAULT);
+    const odGatewayOrigin = () => `https://checkout-gateway-${odEnv()}.dev.appcharge-int.com`;
+    const odPayOrigin = () => `https://pay-${odEnv()}.dev.appcharge-int.com`;
+    /*
+     * Single playground publisher. Same token serves every template
+     * (DEFAULT / SINGLE / FTD / LAST_METHOD) — the FTD vs returning-
+     * depositor distinction lives entirely on the customer id we send,
+     * not on which publisher the request hits.
+     */
+    const PUBLISHER_TOKEN = '0c71aa290eccd54506c5c1091c12efade76ada96024e4300ab955d304a52bb26';
+    // Where the checkout iframe loads from — keyed by the FRONTEND switch.
+    const frontendOrigin = () =>
+      checkoutMode === 'local' ? LOCAL_PAY_ORIGIN
+        : checkoutMode === 'od' ? odPayOrigin()
+          : STAGING_PAY_ORIGIN;
+    // API origin for the selected BACKEND switch. Drives BOTH the playground's
+    // own createSession call AND (via `?__apiUrl=`) the checkout app's runtime
+    // API base when the Local frontend is used — otherwise the localhost app
+    // would keep hitting whatever VITE_PLAYGROUND_API_URL the dev server was
+    // booted with, so "Staging" backend still hit the OD gateway.
+    const backendOrigin = () => (backend === 'od' ? odGatewayOrigin() : STAGING_API_ORIGIN);
+    const createSessionUrl = () => backendOrigin() + '/checkout/v1/session';
+    // Per-currency default price in MINOR units. IQD is a 3-decimal currency
+    // (minor unit = 1/1000), so 2000000 = 20,000 IQD — matches the Nuvei IQD
+    // E2E payload. The Price input above overrides any of these when set.
+    // LATAM defaults ~USD 15.50 equivalent in minor units (2-decimal currencies).
+    const PRICE_MAP = {
+      usd: 1550, cad: 2095, aud: 2395, thb: 56900, eur: 2599, gbp: 5000, iqd: 2000000,
+      brl: 1550, mxn: 28000, ars: 1550000, clp: 1450000, cop: 6200000,
+      pen: 5800, uyu: 62000, crc: 800000, gtq: 12000, dop: 90000,
+    };
+    const IS_REAL_MOBILE_DEVICE =
+      /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+      (window.matchMedia && window.matchMedia('(max-width: 700px) and (pointer: coarse)').matches);
+    if (IS_REAL_MOBILE_DEVICE) document.body.classList.add('real-mobile');
+
+    /* ═══════════════════════════════════════════════════════════════
+       DOM REFS
+       ═══════════════════════════════════════════════════════════════ */
+    const $ = id => document.getElementById(id);
+    const metricsEl = $('metrics');
+    const logEl = $('logPanel');
+    const warmupBadge = $('warmupBadge');
+
+    /* ═══════════════════════════════════════════════════════════════
+       STATE
+       ═══════════════════════════════════════════════════════════════ */
+    /**
+     * Default checkout mode is environment-aware:
+     *   - Served from localhost/127.0.0.1 → `local` (https://localhost:3000)
+     *   - Served from any deployed host (CloudFront, S3 website, etc.)
+     *     → `staging` (https://pay-staging.appcharge.com)
+     * Without this, the deployed demo would try to iframe localhost:3000
+     * which doesn't exist on a customer's laptop and breaks visibly with a
+     * chrome-error://chromewebdata frame.
+     * Override with `?mode=local` or `?mode=staging` in the URL if needed.
+     */
+    const isLocalHost = /^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(location.hostname);
+    const params = new URLSearchParams(location.search);
+    const FRONTEND_MODES = ['local', 'staging', 'od'];
+    const BACKENDS = ['staging', 'od'];
+    const OD_ENV_KEY = 'playground.odEnv';
+    const BACKEND_KEY = 'playground.backend';
+    const modeFromQuery = params.get('mode');
+    let checkoutMode = modeFromQuery && FRONTEND_MODES.includes(modeFromQuery)
+      ? modeFromQuery
+      : (isLocalHost ? 'local' : 'staging');
+    // Backend axis is independent of the frontend origin. Default mirrors the
+    // legacy coupling (staging FE → staging API; local/od FE → OD gateway) but
+    // the Backend switch + `?backend=` override it, and the choice persists in
+    // localStorage so it survives reloads.
+    let backend = (() => {
+      const fromQuery = params.get('backend');
+      if (fromQuery && BACKENDS.includes(fromQuery)) return fromQuery;
+      try { const s = localStorage.getItem(BACKEND_KEY); if (s && BACKENDS.includes(s)) return s; } catch { }
+      return checkoutMode === 'staging' ? 'staging' : 'od';
+    })();
+    let selectedTemplate = 'default';
+    const timings = {};
+    if (IS_REAL_MOBILE_DEVICE) {
+      $('device').value = 'desktop';
+      $('device').disabled = true;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       LOGGING HELPERS
+       ═══════════════════════════════════════════════════════════════ */
+    const ts = t => t.toFixed(0);
+    function mLog(msg, cls) {
+      const d = document.createElement('div');
+      if (cls) d.className = cls;
+      d.textContent = msg;
+      metricsEl.appendChild(d);
+      metricsEl.scrollTop = metricsEl.scrollHeight;
+    }
+    function sLog(msg, cls) {
+      const d = document.createElement('div');
+      if (cls) d.className = cls;
+      d.textContent = msg;
+      logEl.appendChild(d);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+    function clearMetrics() { metricsEl.innerHTML = '<div class="title">Performance Metrics</div>'; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       ENV SWITCHES — frontend origin + backend API + OD env
+       ═══════════════════════════════════════════════════════════════ */
+    // Reflect current frontend/backend selection in the two switches and
+    // stamp the live OD env name onto both OD buttons (e.g. "OD (acdev-22719)").
+    function syncEnvUI() {
+      document.querySelectorAll('#frontendSwitch button').forEach(b =>
+        b.classList.toggle('active', b.dataset.mode === checkoutMode));
+      document.querySelectorAll('#backendSwitch button').forEach(b =>
+        b.classList.toggle('active', b.dataset.backend === backend));
+      const env = odEnv();
+      const fOd = $('frontendOdBtn'); if (fOd) fOd.textContent = `OD (${env})`;
+      const bOd = $('backendOdBtn'); if (bOd) bOd.textContent = `OD (${env})`;
+    }
+
+    // OD env input: ?odEnv= → localStorage → default. Re-label on every
+    // keystroke; re-warm only once the value is committed (blur/Enter) so we
+    // don't spawn a warmup iframe per character.
+    (() => {
+      const el = $('odEnv');
+      if (!el) return;
+      const fromQuery = params.get('odEnv');
+      let initial = OD_ENV_DEFAULT;
+      if (fromQuery) initial = fromQuery;
+      else { try { const s = localStorage.getItem(OD_ENV_KEY); if (s) initial = s; } catch { } }
+      el.value = initial;
+      el.addEventListener('input', () => {
+        try {
+          const v = el.value.trim();
+          if (v) localStorage.setItem(OD_ENV_KEY, v); else localStorage.removeItem(OD_ENV_KEY);
+        } catch { }
+        syncEnvUI();
+      });
+      el.addEventListener('change', () => {
+        syncEnvUI();
+        if (checkoutMode === 'od') runWarmup();
+      });
+    })();
+
+    document.querySelectorAll('#frontendSwitch button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        checkoutMode = btn.dataset.mode;
+        syncEnvUI();
+        sLog(`Frontend → ${checkoutMode} (${frontendOrigin()})`, 'timing');
+        runWarmup();
+      });
+    });
+
+    document.querySelectorAll('#backendSwitch button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        backend = btn.dataset.backend;
+        try { localStorage.setItem(BACKEND_KEY, backend); } catch { }
+        syncEnvUI();
+        sLog(`Backend → ${backend} (${createSessionUrl()})`, 'timing');
+      });
+    });
+
+    syncEnvUI();
+
+    /* ═══════════════════════════════════════════════════════════════
+       TEMPLATE SELECTION
+       ═══════════════════════════════════════════════════════════════ */
+    document.querySelectorAll('.tmpl-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectedTemplate = btn.dataset.tmpl;
+        document.querySelectorAll('.tmpl-btn').forEach(b => b.classList.toggle('active', b === btn));
+      });
+    });
+
+    /* ═══════════════════════════════════════════════════════════════
+       CUSTOMER ID MINT
+       ═══════════════════════════════════════════════════════════════ */
+    $('mintBtn').addEventListener('click', () => {
+      const el = $('customerId');
+      el.value = `pg-${Math.random().toString(36).slice(2, 7)}-${Math.floor(100000 + Math.random() * 900000)}`;
+      el.focus(); el.select();
+    });
+
+    /* ═══════════════════════════════════════════════════════════════
+       PUBLISHER TOKEN OVERRIDE
+       Persist across reloads (localStorage) so the user doesn't have
+       to re-paste a non-default token every time. Blank input falls
+       back to the hardcoded PUBLISHER_TOKEN above.
+       ═══════════════════════════════════════════════════════════════ */
+    const PUBLISHER_TOKEN_KEY = 'playground.publisherToken';
+    (() => {
+      const el = $('publisherToken');
+      if (!el) return;
+      try {
+        const stored = localStorage.getItem(PUBLISHER_TOKEN_KEY);
+        if (stored) el.value = stored;
+      } catch { /* private mode etc — silent no-op */ }
+      el.addEventListener('change', () => {
+        try {
+          const v = el.value.trim();
+          if (v) localStorage.setItem(PUBLISHER_TOKEN_KEY, v);
+          else localStorage.removeItem(PUBLISHER_TOKEN_KEY);
+        } catch { /* ignore */ }
+      });
+    })();
+    /** Per-request token: input override wins over the hardcoded default. */
+    const resolvePublisherToken = () => {
+      const override = $('publisherToken')?.value.trim();
+      return override || PUBLISHER_TOKEN;
+    };
+    /** Mask `<first8>…<last4>` for log lines so we don't dump secrets on screen. */
+    const maskToken = (t) => (t.length <= 12 ? t : `${t.slice(0, 8)}…${t.slice(-4)}`);
+
+    /* ═══════════════════════════════════════════════════════════════
+       CUSTOMER EMAIL OVERRIDE
+       Same persistence contract as the publisher token: survives
+       reloads via localStorage, blank falls back to the derived
+       `<customerId>@playground.local`.
+       ═══════════════════════════════════════════════════════════════ */
+    const CUSTOMER_EMAIL_KEY = 'playground.customerEmail';
+    (() => {
+      const el = $('customerEmail');
+      if (!el) return;
+      try {
+        const stored = localStorage.getItem(CUSTOMER_EMAIL_KEY);
+        if (stored) el.value = stored;
+      } catch { /* private mode etc — silent no-op */ }
+      el.addEventListener('change', () => {
+        try {
+          const v = el.value.trim();
+          if (v) localStorage.setItem(CUSTOMER_EMAIL_KEY, v);
+          else localStorage.removeItem(CUSTOMER_EMAIL_KEY);
+        } catch { /* ignore */ }
+      });
+    })();
+    /** Per-session email: input override wins over the derived default. */
+    const resolveCustomerEmail = (customerId) => {
+      const override = $('customerEmail')?.value.trim();
+      return override || `${customerId}@playground.local`;
+    };
+
+    /* ═══════════════════════════════════════════════════════════════
+       TOGGLES (instant wallets + boot overrides)
+       ═══════════════════════════════════════════════════════════════ */
+    // Each toggle declares a `bootPatch` dot-path -> appended to
+    // `?__bootPatch=` (b64), deep-merged into the decoded boot via
+    // window.__playgroundApplyBootPatch.
+    // Sprint 87 staging-QA feature flags. Each flag must also be
+    // allowlisted in checkout-ui-v3 `src/utils/devFlagOverrides.ts` for the
+    // patch to actually take effect on staging.
+    //
+    // Two `kind`s supported:
+    //   - boolean (default): a checkbox; emits `bootPatch` when checked.
+    //   - radio:             a segmented chip group with declared `values`;
+    //                        emits `bootPatchFor(value)` when the selected
+    //                        value is not the `defaultValue`. Mutually-
+    //                        exclusive states like 'off' / 'up' / 'down'
+    //                        belong here, not as multiple boolean toggles.
+    const TOGGLES = [
+      {
+        id: 'pay-cta-idle-pulse',
+        kind: 'boolean',
+        group: 'Feature flags',
+        label: 'Pay CTA idle pulse',
+        hint: 'Patches boot.featureFlags.payCtaIdlePulse=true. Pulses the primary "Pay" button while the form is actionable and the user is idle.',
+        defaultOn: true,
+        bootPatch: { 'featureFlags.payCtaIdlePulse': true },
+      },
+      {
+        id: 'pref-template-card-icons',
+        kind: 'boolean',
+        group: 'Feature flags',
+        label: 'PREFERRED template card icons',
+        hint: 'Patches boot.featureFlags.checkout_show_payment_method_icons=true. Renders Visa/Mastercard/Amex icons under the FTD/last-method "Use Other Payment Method" link (Figma 96630:691).',
+        defaultOn: true,
+        bootPatch: { 'featureFlags.checkout_show_payment_method_icons': true },
+      },
+      {
+        id: 'pay-button-location',
+        kind: 'radio',
+        group: 'Feature flags',
+        label: 'Pay button location',
+        hint: 'Patches boot.featureFlags.payButtonLocation. Vocabulary mirrors the Harness flag treatments: "Top" = today\'s layout (button hugs Details), "Bottom" = button slides to the bottom of the modal on PREFERRED + SINGLE templates. "Off" omits the entry from __bootPatch entirely (= Harness "disabled" kill-switch behavior).',
+        values: [
+          { value: 'off', label: 'Off' },
+          { value: 'top', label: 'Top' },
+          { value: 'bottom', label: 'Bottom' },
+        ],
+        defaultValue: 'off',
+        bootPatchFor: (value) => (value === 'off' ? null : { 'featureFlags.payButtonLocation': value }),
+      },
+    ];
+    const TOGGLE_KEY = 'sdkPlaygroundToggles';
+    let toggleState = {};
+    try { toggleState = JSON.parse(localStorage.getItem(TOGGLE_KEY) || '{}'); } catch { }
+    for (const t of TOGGLES) {
+      if (t.id in toggleState) continue;
+      toggleState[t.id] = t.kind === 'radio' ? t.defaultValue : !!t.defaultOn;
+    }
+    function saveToggles() { try { localStorage.setItem(TOGGLE_KEY, JSON.stringify(toggleState)); } catch { } }
+
+    function renderToggles() {
+      const el = $('togglesList');
+      el.innerHTML = '';
+      const groups = new Map();
+      for (const t of TOGGLES) { if (!groups.has(t.group)) groups.set(t.group, []); groups.get(t.group).push(t); }
+      for (const [groupName, items] of groups) {
+        const groupHeader = document.createElement('div');
+        groupHeader.style.cssText = 'flex-basis:100%;color:#7c3aed;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.6px;margin-top:6px;';
+        groupHeader.textContent = groupName;
+        el.appendChild(groupHeader);
+        for (const t of items) {
+          if (t.kind === 'radio') {
+            renderRadioToggle(el, t);
+          } else {
+            renderBooleanToggle(el, t);
+          }
+        }
+      }
+      updateToggleSummary();
+    }
+    function renderBooleanToggle(el, t) {
+      const lbl = document.createElement('label');
+      lbl.className = 'toggle-chip';
+      lbl.title = t.hint || '';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.checked = !!toggleState[t.id];
+      cb.addEventListener('change', () => { toggleState[t.id] = cb.checked; saveToggles(); updateToggleSummary(); });
+      const sp = document.createElement('span');
+      sp.textContent = t.label;
+      lbl.append(cb, sp);
+      el.appendChild(lbl);
+    }
+    // Mutually-exclusive segmented chip group: the toggle's `value` lives
+    // directly in `toggleState[id]` as a string (vs the boolean checkbox
+    // case where it lives as a `boolean`).
+    function renderRadioToggle(el, t) {
+      const wrap = document.createElement('div');
+      wrap.className = 'toggle-chip';
+      wrap.title = t.hint || '';
+      wrap.style.cssText = 'gap:6px;flex-wrap:wrap;';
+      const labelSp = document.createElement('span');
+      labelSp.textContent = t.label + ':';
+      labelSp.style.cssText = 'color:#cbd5e1;font-weight:600;';
+      wrap.appendChild(labelSp);
+      const current = toggleState[t.id] ?? t.defaultValue;
+      for (const opt of t.values) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = opt.label;
+        const isActive = current === opt.value;
+        btn.style.cssText = 'padding:2px 9px;border-radius:5px;font-size:11px;font:inherit;cursor:pointer;'
+          + (isActive
+            ? 'background:#7c3aed;border:1px solid #7c3aed;color:#fff;'
+            : 'background:#1f2937;border:1px solid #374151;color:#cbd5e1;');
+        btn.addEventListener('click', () => {
+          toggleState[t.id] = opt.value;
+          saveToggles();
+          renderToggles();
+        });
+        wrap.appendChild(btn);
+      }
+      el.appendChild(wrap);
+    }
+    function updateToggleSummary() {
+      const { patchCount } = collectToggles();
+      $('togglesSummary').textContent = patchCount ? `(patches:${patchCount})` : '';
+    }
+    function collectToggles() {
+      const patch = {};
+      for (const t of TOGGLES) {
+        if (t.kind === 'radio') {
+          const value = toggleState[t.id] ?? t.defaultValue;
+          const radioPatch = t.bootPatchFor ? t.bootPatchFor(value) : null;
+          if (radioPatch) Object.assign(patch, radioPatch);
+          continue;
+        }
+        if (!toggleState[t.id]) continue;
+        if (t.bootPatch) Object.assign(patch, t.bootPatch);
+      }
+      return { patch, patchCount: Object.keys(patch).length };
+    }
+
+    // URL-safe base64 encoder for bootPatch — mirrors
+    // checkout-ui-v3/playground/launcher.js#encodeBootPatch so the
+    // interceptor's decoder can reverse it 1:1.
+    function encodeBootPatch(patch) {
+      if (!patch || !Object.keys(patch).length) return '';
+      const json = JSON.stringify(patch);
+      const b64 = btoa(unescape(encodeURIComponent(json)));
+      return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    $('togglesReset').addEventListener('click', () => {
+      for (const t of TOGGLES) {
+        toggleState[t.id] = t.kind === 'radio' ? t.defaultValue : !!t.defaultOn;
+      }
+      saveToggles();
+      renderToggles();
+    });
+    // "All On" only affects boolean toggles; radio toggles stay at their
+    // declared defaultValue so we don't accidentally pick a layout-altering
+    // value (e.g. payButtonLocation='top') just because someone hit "All on".
+    $('togglesAllOn').addEventListener('click', () => {
+      for (const t of TOGGLES) {
+        if (t.kind === 'radio') continue;
+        toggleState[t.id] = true;
+      }
+      saveToggles();
+      renderToggles();
+    });
+
+    renderToggles();
+
+    /* ═══════════════════════════════════════════════════════════════
+       PANEL TOGGLE
+       ═══════════════════════════════════════════════════════════════ */
+    let panelsVisible = true;
+    $('panelToggle').addEventListener('click', () => {
+      panelsVisible = !panelsVisible;
+      $('bottomPanels').style.display = panelsVisible ? 'flex' : 'none';
+      $('panelToggle').textContent = panelsVisible ? '▼ Panels' : '▲ Panels';
+    });
+
+    /* ═══════════════════════════════════════════════════════════════
+       WARMUP
+       ═══════════════════════════════════════════════════════════════ */
+    let warmupDone = false;
+    function runWarmup() {
+      warmupDone = false;
+      warmupBadge.textContent = 'WARMING UP…';
+      warmupBadge.className = 'warmup-status pending';
+      // Warmup is a fire-and-forget perf optimization — it must NOT gate the
+      // Buy Now buttons. The user can open checkout immediately; warmup just
+      // means the assets are already cached if it finished first.
+      const origin = frontendOrigin();
+      const t0 = performance.now();
+      mLog(`warmupCheckout(${origin})…`, 'preload');
+      warmupCheckout(origin).then(() => {
+        warmupDone = true;
+        const ms = ts(performance.now() - t0);
+        warmupBadge.textContent = `WARM ✓ ${ms}ms`;
+        warmupBadge.className = 'warmup-status done';
+        mLog(`  warmup complete — ${ms}ms`, 'timing');
+      });
+    }
+    runWarmup();
+
+    /* ═══════════════════════════════════════════════════════════════
+       BOOT DECODE (mirrors playground/launcher.js logic)
+       ═══════════════════════════════════════════════════════════════ */
+    function b64urlToBytes(v) {
+      const b = v.replace(/-/g, '+').replace(/_/g, '/');
+      const p = b + '='.repeat((4 - (b.length % 4)) % 4);
+      const bin = atob(p);
+      const u = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+      return u;
+    }
+    async function inflate(bytes) {
+      const s = new Response(bytes).body.pipeThrough(new DecompressionStream('deflate'));
+      return new Response(s).text();
+    }
+    async function decodeBoot(parsedUrl) {
+      try {
+        const hash = new URL(parsedUrl).hash;
+        if (!hash || hash.length <= 1) return null;
+        const bp = new URLSearchParams(hash.substring(1)).get('boot');
+        if (!bp) return null;
+        if (!bp.includes('.')) { try { return JSON.parse(atob(bp)) } catch { return null } }
+        const [, payB64] = bp.split('.');
+        if (!payB64) return null;
+        const pay = JSON.parse(new TextDecoder().decode(b64urlToBytes(payB64)));
+        if (!pay?.d) return pay;
+        return JSON.parse(await inflate(b64urlToBytes(pay.d)));
+      } catch (e) { console.warn('boot decode failed', e); return null; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SESSION CREATION
+       ═══════════════════════════════════════════════════════════════ */
+    function buildPayload(btn) {
+      const tmpl = selectedTemplate;
+      const currency = $('currency').value;
+      const country = $('country').value;
+      const inputCid = $('customerId').value.trim();
+      const singleMethod = $('singleMethod')?.value || 'card';
+
+      let customerId;
+      if (tmpl === 'last' && !inputCid) {
+        alert('Last Method needs a customer ID. Mint/type one, complete a payment with it, then open Last Method again.');
+        return null;
+      }
+      if (inputCid) {
+        customerId = inputCid;
+      } else if (tmpl === 'ftd') {
+        customerId = `ftd-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      } else {
+        customerId = `demo-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      }
+      // Keep generated IDs visible/reusable. This is critical for the
+      // Last Method template: the user must open it with the same customer
+      // that completed the previous payment.
+      $('customerId').value = customerId;
+
+      // Price precedence: explicit Price input (minor units) → per-currency
+      // default (PRICE_MAP) → the product button's data-price fallback.
+      const priceOverride = parseInt($('price').value, 10);
+      const price =
+        Number.isFinite(priceOverride) && priceOverride > 0
+          ? priceOverride
+          : (PRICE_MAP[currency] ?? parseInt(btn.dataset.price));
+      const payload = {
+        customer: { id: customerId, email: resolveCustomerEmail(customerId) },
+        priceDetails: { price, currency },
+        offer: { name: btn.dataset.name, sku: btn.dataset.sku, assetUrl: 'https://media-dev.appcharge.com/media/product-3.png', description: `${btn.dataset.name} Bundle` },
+        items: buildFiveProductItems(btn),
+        sessionMetadata: { source: 'sdk-playground' },
+      };
+      if (country) {
+        // `countryCode2` is a top-level create-session API field used by checkout
+        // BE to determine tax jurisdiction. Keep the nested fields as harmless
+        // backwards-compatible hints for older/internal callers.
+        payload.countryCode2 = country;
+        payload.customer.taxCountry = country;
+        payload.customer.countryCode2 = country;
+      }
+      // Honor the single-method picker (was hardcoded to ['card'] — that
+      // made it impossible to test google/apple/paypal single flows).
+      if (tmpl === 'single') { payload.checkoutConfiguration = { availablePaymentMethods: [singleMethod] }; }
+
+      return { payload, token: resolvePublisherToken(), customerId, singleMethod };
+    }
+
+    function buildFiveProductItems(btn) {
+      const sku = btn.dataset.sku;
+      const baseQty = parseInt(btn.dataset.qty);
+      return [
+        { name: `${btn.dataset.name} Coins`, assetUrl: 'https://media-dev.appcharge.com/media/product-3.png', sku: `${sku}_coins`, quantity: baseQty },
+        { name: 'Bonus Gems', assetUrl: 'https://media-dev.appcharge.com/media/product-3.png', sku: `${sku}_gems`, quantity: Math.max(50, Math.round(baseQty * 0.05)) },
+        { name: 'Energy Refill', assetUrl: 'https://media-dev.appcharge.com/media/product-3.png', sku: `${sku}_energy`, quantity: 1 },
+        { name: 'Mystery Chest', assetUrl: 'https://media-dev.appcharge.com/media/product-3.png', sku: `${sku}_mystery_chest`, quantity: 1 },
+        { name: 'Speed Booster', assetUrl: 'https://media-dev.appcharge.com/media/product-3.png', sku: `${sku}_speed_booster`, quantity: 3 },
+      ];
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       REACT APP — AppchargeCheckout
+       ═══════════════════════════════════════════════════════════════ */
+    const root = createRoot($('mount'));
+    let appState = { url: null, visible: false };
+
+    const DEVICE_SIZES = {
+      desktop: null,
+      'ios-small': { w: 375, h: 667 },
+      ios: { w: 390, h: 844 },
+      'ios-max': { w: 430, h: 932 },
+      'ios-landscape': { w: 844, h: 390 },
+      'android-small': { w: 360, h: 640 },
+      android: { w: 412, h: 915 },
+      'android-landscape': { w: 915, h: 412 },
+      ipad: { w: 820, h: 1180 },
+    };
+
+    const DEVICE_LABELS = {
+      'ios-small': 'iPhone SE — 375×667',
+      ios: 'iPhone 14 Pro — 390×844',
+      'ios-max': 'iPhone 14 Pro Max — 430×932',
+      'ios-landscape': 'iPhone 14 Pro landscape — 844×390',
+      'android-small': 'Galaxy S8 — 360×640',
+      android: 'Pixel 7 — 412×915',
+      'android-landscape': 'Pixel 7 landscape — 915×412',
+      ipad: 'iPad Air — 820×1180',
+    };
+    function applyDeviceFrame(device) {
+      const mount = $('mount');
+      mount.className = 'active';
+      if (device && device !== 'desktop') mount.classList.add(`device-${device}`);
+    }
+
+    /**
+     * SDK-event console tracer. Surfaces every `EFEEvent` the SDK forwards
+     * through `<AppchargeCheckout>` callbacks so an integrator can see the
+     * exact shape and ordering of events in DevTools without having to wire
+     * their own handlers. Group is opened lazily on the first event of a
+     * session and closed in `onClose`.
+     */
+    let sdkEventGroupOpen = false;
+    const traceSdkEvent = (event, params) => {
+      if (!sdkEventGroupOpen) {
+        // eslint-disable-next-line no-console
+        console.groupCollapsed(`%c[SDK]`, 'color:#10b981;font-weight:600', 'event stream');
+        sdkEventGroupOpen = true;
+      }
+      // eslint-disable-next-line no-console
+      console.log(`%c← ${event}`, 'color:#10b981;font-weight:600', params ?? '∅');
+    };
+    const closeSdkEventGroup = () => {
+      if (sdkEventGroupOpen) {
+        // eslint-disable-next-line no-console
+        console.groupEnd();
+        sdkEventGroupOpen = false;
+      }
+    };
+
+    function App({ url, visible }) {
+      if (!url) return null;
+      return createElement('div', { className: 'device-frame' },
+        createElement(AppchargeCheckout, {
+          checkoutUrl: url,
+          referrerUrl: location.href,
+          visible,
+          onInitialLoad() {
+            traceSdkEvent('onInitialLoad');
+            timings.iframeLoaded = performance.now();
+            const sinceClick = timings.iframeLoaded - timings.buyClick;
+            const clientLoad = timings.iframeLoaded - timings.sessionCreated;
+            mLog(`iframe loaded — ${ts(sinceClick)}ms since click`, 'timing');
+            mLog(`  ⤷ CLIENT LOAD TIME: ${ts(clientLoad)}ms`, 'timing');
+          },
+          onOpen() {
+            traceSdkEvent('onOpen (CHECKOUT_OPENED)');
+            timings.opened = performance.now();
+            const sinceClick = timings.opened - timings.buyClick;
+            const clientBoot = timings.opened - timings.sessionCreated;
+            mLog(`checkout opened — ${ts(sinceClick)}ms since click`, 'timing');
+            mLog(`  ⤷ CLIENT BOOT: ${ts(clientBoot)}ms`, 'timing');
+            mLog(`TOTAL: click → visible: ${ts(sinceClick)}ms`, 'final');
+            $('mount').style.pointerEvents = 'auto';
+          },
+          onOrderCreated(params) {
+            traceSdkEvent('onOrderCreated (ORDER_CREATED)', params);
+          },
+          onPaymentIntent(params) {
+            traceSdkEvent('onPaymentIntent (ON_PAYMENT_INTENT)', params);
+          },
+          onPaymentIntentSuccess(params) {
+            traceSdkEvent('onPaymentIntentSuccess (PAYMENT_INTENT_SUCCESS)', params);
+          },
+          onPaymentIntentFailed(params) {
+            traceSdkEvent('onPaymentIntentFailed (PAYMENT_INTENT_FAILED)', params);
+          },
+          onOrderCompletedSuccessfully(params) {
+            traceSdkEvent('onOrderCompletedSuccessfully (ORDER_COMPLETED_SUCCESS)', params);
+          },
+          onOrderCompletedFailed(params) {
+            traceSdkEvent('onOrderCompletedFailed (ORDER_COMPLETED_FAILED)', params);
+          },
+          onClose(params) {
+            traceSdkEvent('onClose (CLOSE_CHECKOUT)', params);
+            closeSdkEventGroup();
+            appState = { url: null, visible: false };
+            $('mount').style.pointerEvents = 'none';
+            $('mount').className = ''; // removes active + device-* classes
+            root.render(null);
+            document.querySelectorAll('.buy-btn').forEach(b => b.disabled = false);
+            mLog('checkout closed');
+          },
+        }),
+      );
+    }
+
+    const render = () => root.render(createElement(App, appState));
+
+    /* ═══════════════════════════════════════════════════════════════
+       BUY CLICK HANDLER
+       ═══════════════════════════════════════════════════════════════ */
+    document.querySelectorAll('.buy-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const built = buildPayload(btn);
+        if (!built) return;
+        const { payload, token, customerId, singleMethod } = built;
+
+        document.querySelectorAll('.buy-btn').forEach(b => b.disabled = true);
+        clearMetrics();
+        if (warmupDone) mLog(`warmup cached assets — bundles in browser cache`, 'preload');
+
+        timings.buyClick = performance.now();
+        const tmplLabel = selectedTemplate.toUpperCase();
+        mLog(`"${btn.dataset.name}" clicked [${tmplLabel}] — creating session…`);
+        sLog(`──── ${tmplLabel}: ${btn.dataset.name} (${payload.priceDetails.currency.toUpperCase()}) ────`);
+        sLog(`customer: ${customerId}`);
+        sLog(`email: ${payload.customer.email}`);
+        if (token !== PUBLISHER_TOKEN) sLog(`token override: ${maskToken(token)}`);
+
+        try {
+          const t0 = performance.now();
+          const sessionUrl = createSessionUrl();
+          sLog(`createSession: ${sessionUrl} [backend=${backend}]`, 'boot');
+          const res = await fetch(sessionUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'x-publisher-token': token },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error(`createSession ${res.status}: ${await res.text().then(t => t.slice(0, 200))}`);
+          const data = await res.json();
+          timings.sessionCreated = performance.now();
+          const sessionMs = ts(timings.sessionCreated - timings.buyClick);
+          mLog(`session created — ${sessionMs}ms`, 'timing');
+          sLog(`session: ${data.checkoutSessionToken?.slice(0, 16)}… (${sessionMs}ms)`, 'timing');
+
+          // Decode and log boot
+          const boot = await decodeBoot(data.parsedUrl);
+          if (boot) {
+            const cfg = boot.checkoutConfiguration || {};
+            sLog(`boot.template: ${cfg.template ?? '∅'}`, 'boot');
+            sLog(`boot.isFirstTimeDepositor: ${cfg.isFirstTimeDepositor ?? '∅'}`, 'boot');
+            sLog(`boot.preferredPaymentMethod: ${cfg.preferredPaymentMethod ?? '∅'}`, 'boot');
+            console.group(`[playground] boot — ${tmplLabel} customer=${customerId}`);
+            console.log(boot);
+            console.groupEnd();
+          }
+
+          // Rewrite URL to the selected origin AND plumb playground
+          // overrides through query params (read by
+          // checkout-ui-v3/playground/fetch-interceptor.js when the host
+          // is running in `npm run playground` mode):
+          //   __bootPatch     — base64 dot-path overrides for the boot
+          //   __forceTemplate — SINGLE template hint (BE doesn't echo it)
+          //   __forceMethod   — which method the SINGLE template renders
+          //   __emulate       — UA emulation (ios/android) for device-aware code
+          const origin = frontendOrigin();
+          // BE returns parsedUrl on its own pay host (staging OR the OD pay
+          // host, e.g. pay-acdev-22719…). Swap just the origin to the selected
+          // FRONTEND mode, preserving the path + #boot hash, so `local` loads
+          // the checkout served at :3000 against whichever backend created
+          // the session.
+          let finalUrl = data.parsedUrl;
+          try {
+            const _u = new URL(data.parsedUrl);
+            const _o = new URL(origin);
+            _u.protocol = _o.protocol;
+            _u.host = _o.host;
+            finalUrl = _u.toString();
+          } catch { /* keep BE url */ }
+          const requestedDevice = $('device').value;
+          const device = IS_REAL_MOBILE_DEVICE ? 'desktop' : requestedDevice;
+          // Collapse the device frame value to the UA emulation family so
+          // `ios-small`, `ios-max`, `ios-landscape` all emulate iOS, and
+          // every Android variant emulates Android. iPad emulates iOS too
+          // (mobile Safari UA). Desktop / unknown → no emulation.
+          const emulate = IS_REAL_MOBILE_DEVICE
+            ? ''
+            : device.startsWith('ios') || device === 'ipad'
+              ? 'ios'
+              : device.startsWith('android')
+                ? 'android'
+                : '';
+          const { patch, patchCount } = collectToggles();
+          // Language: the checkout reads `?locale=` from its own URL
+          // (see checkout-ui-v3/src/utils/get-locale-util.ts). `en` is the
+          // bundled default, so only plumb the param for other locales.
+          const locale = $('locale').value;
+
+          try {
+            const u = new URL(finalUrl);
+            // SINGLE flow keeps the URL-hint patch because the BE
+            // doesn't echo `template` back for the
+            // `availablePaymentMethods` filter — the FE template system
+            // needs the hint to render one_payment.
+            //
+            // FTD and LAST_METHOD intentionally have NO client patches:
+            // the unified playground publisher (0c71aa29…) has the BE
+            // `checkout_use_preferred_payment_method_template` flag ON,
+            // so `template: PREFERRED_PAYMENT_METHOD` +
+            // `isFirstTimeDepositor` / `preferredPaymentMethod` come
+            // back natively. Forcing the template client-side here was
+            // a legacy hack from when the default publisher didn't
+            // return it; removing it makes the playground actually
+            // exercise the production code path end-to-end.
+            if (selectedTemplate === 'single') {
+              u.searchParams.set('__forceTemplate', 'one_payment');
+              u.searchParams.set('__forceMethod', singleMethod);
+            }
+            if (emulate) u.searchParams.set('__emulate', emulate);
+            if (locale && locale !== 'en') u.searchParams.set('locale', locale);
+            if (patchCount) u.searchParams.set('__bootPatch', encodeBootPatch(patch));
+            // Repoint the checkout app's OWN runtime API base (/checkout/v3,
+            // PCI, etc.) at the selected backend. Only the Local (npm run
+            // playground) frontend honors this — fetch-interceptor.js reads
+            // `__apiUrl` and overrides window.VITE_API_URL before the app
+            // bundle evaluates. Deployed pay-* hosts have a baked-in API base
+            // and ignore the param. Without it, "Staging" backend created the
+            // session on staging but the localhost app still called the OD
+            // gateway (whatever VITE_PLAYGROUND_API_URL the dev server booted with).
+            if (checkoutMode === 'local') u.searchParams.set('__apiUrl', backendOrigin());
+            finalUrl = u.toString();
+          } catch (e) {
+            sLog(`URL-param plumbing failed: ${e.message}`, 'err');
+          }
+
+          applyDeviceFrame(device);
+          mLog(`mounting iframe → ${finalUrl.slice(0, 65)}…`);
+          sLog(
+            `origin: ${origin}, device: ${IS_REAL_MOBILE_DEVICE ? 'real-mobile (no emulation)' : device
+            }${emulate ? ` (emulate=${emulate})` : ''}`
+          );
+          sLog(`items: ${payload.items.length}`, 'boot');
+          if (locale && locale !== 'en') sLog(`locale: ${locale} (fetched from BE translations API)`, 'boot');
+          if (selectedTemplate === 'single') sLog(`single-method: ${singleMethod}`, 'boot');
+          if (patchCount) sLog(`bootPatch: ${JSON.stringify(patch)}`, 'preload');
+
+          appState = { url: finalUrl, visible: true };
+          render();
+        } catch (err) {
+          mLog(`ERROR: ${err.message}`, 'err');
+          sLog(`ERROR: ${err.message}`, 'err');
+          document.querySelectorAll('.buy-btn').forEach(b => b.disabled = false);
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
