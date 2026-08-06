@@ -20,6 +20,14 @@
 const NOOP = (): void => { /* nothing to restore */ };
 
 /**
+ * Marker class added to <html> on iOS/iPadOS 26+ only. CSS scoped to this class
+ * (see styles.scss) stretches the checkout iframe to the full screen so it covers
+ * the area behind the translucent toolbar (otherwise the publisher's page shows
+ * through there). Kept in sync with styles.scss.
+ */
+export const LIQUID_GLASS_CLASS = 'ac-ios26-liquid-glass';
+
+/**
  * True only on iOS / iPadOS 26 or newer. Covers classic iPhone/iPod/iPad user
  * agents ("... OS 26_0 ...") and iPadOS masquerading as macOS ("MacIntel" +
  * touch), where the Safari version ("Version/26") tracks the OS version.
@@ -88,14 +96,38 @@ export function ensureViewportFitCover(): () => void {
 }
 
 /**
- * Apply the iOS 26 Safari Liquid Glass fix — but ONLY on iOS/iPadOS 26+. Returns a
- * cleanup function that reverts every change (a no-op on unaffected platforms), so
- * the publisher page is left exactly as it was once the checkout unmounts.
+ * Add the iOS-26 marker class to <html> (see LIQUID_GLASS_CLASS). Returns a
+ * function that removes it again. No-op / never-throws off the happy path.
+ */
+function markLiquidGlassRoot(): () => void {
+  try {
+    const html = typeof document !== 'undefined' ? document.documentElement : null;
+    if (!html || html.classList.contains(LIQUID_GLASS_CLASS)) return NOOP;
+    html.classList.add(LIQUID_GLASS_CLASS);
+    return () => { try { html.classList.remove(LIQUID_GLASS_CLASS); } catch { /* noop */ } };
+  } catch {
+    return NOOP;
+  }
+}
+
+/**
+ * Apply the iOS 26 Safari Liquid Glass fix — but ONLY on iOS/iPadOS 26+. It:
+ *   1. opts the host page into `viewport-fit=cover`, and
+ *   2. marks <html> so the iframe is stretched full-screen (CSS in styles.scss),
+ *      covering the publisher's page behind the translucent toolbar.
+ * Returns a cleanup function that reverts every change (a no-op on unaffected
+ * platforms), so the publisher page is left exactly as it was once checkout
+ * unmounts.
  *
  * @example
  * useEffect(() => enableLiquidGlassFix(), []);
  */
 export function enableLiquidGlassFix(): () => void {
   if (!isIos26OrAbove()) return NOOP;
-  return ensureViewportFitCover();
+  const restoreViewport = ensureViewportFitCover();
+  const restoreClass = markLiquidGlassRoot();
+  return () => {
+    restoreClass();
+    restoreViewport();
+  };
 }
