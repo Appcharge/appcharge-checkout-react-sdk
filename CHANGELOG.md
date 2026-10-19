@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.5.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.4.0...v4.5.0) (2026-10-19)
+
+
+### Features
+
+* add onPaymentButtonClicked event ([#34](https://github.com/Appcharge/appcharge-checkout-react-sdk/issues/34)) ([d61367f](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/d61367f97d7d63bc41764a98c4f8a714b79f1e38))
+
+
+### Bug Fixes
+
+* remove iOS 26 Safari Liquid Glass white band below checkout iframe ([#30](https://github.com/Appcharge/appcharge-checkout-react-sdk/issues/30)) ([d612f28](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/d612f28db3bc7b54002fb6e6c8538873cba231cc))
+
 ## [4.4.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.3.0...v4.4.0) (2026-06-17)
 
 
