@@ -22,6 +22,7 @@ export interface EventParams {
   totalSum: number;
   totalSumCurrency: string;
   paymentMethodName: string;
+  previousPaymentMethodName?: string;
   userId?: string;
   userCountry?: string;
   reason?: string;
@@ -38,6 +39,7 @@ export enum EFEEvent {
   APPCHARGE_THEME = 'appcharge_theme',
   ON_PAYMENT_INTENT = 'appcharge_on_payment_intent',
   ON_PAYMENT_BUTTON_CLICKED = 'appcharge_on_payment_button_clicked',
+  PAYMENT_METHOD_SELECTED = 'appcharge_payment_method_selected',
 }
 
 interface FEMessage {
@@ -70,6 +72,7 @@ export interface AppchargeCheckoutProps {
   onOrderCreated?: (params: Partial<EventParams>) => void;
   onPaymentButtonClicked?: (params: Partial<EventParams>) => void;
   onPaymentIntent?: (params: Partial<EventParams>) => void;
+  onPaymentMethodSelected?: (params: Partial<EventParams>) => void;
   onPaymentIntentFailed?: (params: Partial<EventParams>) => void;
   onOrderCompletedFailed?: (params: Partial<EventParams>) => void;
   onPaymentIntentSuccess?: (params: Partial<EventParams>) => void;
@@ -90,6 +93,7 @@ function AppchargeCheckout({
   onOrderCreated,
   onPaymentButtonClicked,
   onPaymentIntent,
+  onPaymentMethodSelected,
   onPaymentIntentFailed,
   onPaymentIntentSuccess,
   onOrderCompletedFailed,
@@ -123,6 +127,9 @@ function AppchargeCheckout({
         case EFEEvent.ON_PAYMENT_INTENT:
           onPaymentIntent?.(params);
           break;
+        case EFEEvent.PAYMENT_METHOD_SELECTED:
+          onPaymentMethodSelected?.(params);
+          break;
         case EFEEvent.CLOSE_CHECKOUT:
           onClose?.(params);
           break;
@@ -142,6 +149,7 @@ function AppchargeCheckout({
     onOrderCreated,
     onPaymentButtonClicked,
     onPaymentIntent,
+    onPaymentMethodSelected,
     onPaymentIntentFailed,
     onPaymentIntentSuccess,
     onOrderCompletedFailed,
