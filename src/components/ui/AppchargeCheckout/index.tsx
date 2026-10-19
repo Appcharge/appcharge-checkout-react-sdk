@@ -37,6 +37,7 @@ export enum EFEEvent {
   CHECKOUT_OPENED = 'appcharge_checkout_opened',
   APPCHARGE_THEME = 'appcharge_theme',
   ON_PAYMENT_INTENT = 'appcharge_on_payment_intent',
+  ON_PAYMENT_BUTTON_CLICKED = 'appcharge_on_payment_button_clicked',
 }
 
 interface FEMessage {
@@ -67,6 +68,7 @@ export interface AppchargeCheckoutProps {
   onClose?: (params: Partial<EventParams>) => void;
   onInitialLoad?: () => void;
   onOrderCreated?: (params: Partial<EventParams>) => void;
+  onPaymentButtonClicked?: (params: Partial<EventParams>) => void;
   onPaymentIntent?: (params: Partial<EventParams>) => void;
   onPaymentIntentFailed?: (params: Partial<EventParams>) => void;
   onOrderCompletedFailed?: (params: Partial<EventParams>) => void;
@@ -86,6 +88,7 @@ function AppchargeCheckout({
   onOpen,
   onInitialLoad,
   onOrderCreated,
+  onPaymentButtonClicked,
   onPaymentIntent,
   onPaymentIntentFailed,
   onPaymentIntentSuccess,
@@ -114,6 +117,9 @@ function AppchargeCheckout({
         case EFEEvent.PAYMENT_INTENT_SUCCESS:
           onPaymentIntentSuccess?.(params);
           break;
+        case EFEEvent.ON_PAYMENT_BUTTON_CLICKED:
+          onPaymentButtonClicked?.(params);
+          break;
         case EFEEvent.ON_PAYMENT_INTENT:
           onPaymentIntent?.(params);
           break;
@@ -134,6 +140,7 @@ function AppchargeCheckout({
   }, [
     checkoutUrl,
     onOrderCreated,
+    onPaymentButtonClicked,
     onPaymentIntent,
     onPaymentIntentFailed,
     onPaymentIntentSuccess,
