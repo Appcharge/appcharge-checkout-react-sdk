@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.6.1](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.6.0...v4.6.1) (2026-10-22)
+
+
+### Bug Fixes
+
+* republish 4.6.0 with missing build artifacts ([ade5282](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/ade5282f976678ce5309279e4fb1c655fbba1882))
+
 ## [4.6.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.5.0...v4.6.0) (2026-10-22)
 
 
