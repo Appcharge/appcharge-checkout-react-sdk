@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.6.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.5.0...v4.6.0) (2026-10-22)
+
+
+### Features
+
+* add new onPaymentMethodSelected event ([#35](https://github.com/Appcharge/appcharge-checkout-react-sdk/issues/35)) ([6d4ea8b](https://github.com/Appcharge/appcharge-checkout-react-sdk/commit/6d4ea8bb0242c4484adc07f826613721f0846825))
+
 ## [4.5.0](https://github.com/Appcharge/appcharge-checkout-react-sdk/compare/v4.4.0...v4.5.0) (2026-10-19)
 
 
