@@ -5,6 +5,7 @@ import {
   ensureViewportFitCover,
   enableLiquidGlassFix,
   isIos26OrAbove,
+  LIQUID_GLASS_CLASS,
 } from './liquid-glass';
 
 function viewportMetas(): HTMLMetaElement[] {
@@ -47,6 +48,7 @@ const UA = {
 
 beforeEach(() => {
   document.head.innerHTML = '';
+  document.documentElement.classList.remove(LIQUID_GLASS_CLASS);
 });
 
 describe('isIos26OrAbove', () => {
@@ -77,21 +79,24 @@ describe('isIos26OrAbove', () => {
 });
 
 describe('enableLiquidGlassFix', () => {
-  it('injects viewport-fit=cover on iOS 26 and reverts on cleanup', () => {
+  it('injects viewport-fit=cover + marks <html> on iOS 26 and reverts on cleanup', () => {
     mockNavigator({ userAgent: UA.iphone26 });
 
     const restore = enableLiquidGlassFix();
     expect(viewportMetas()).toHaveLength(1);
     expect(viewportMetas()[0].getAttribute('content')).toContain('viewport-fit=cover');
+    expect(document.documentElement.classList.contains(LIQUID_GLASS_CLASS)).toBe(true);
 
     restore();
     expect(viewportMetas()).toHaveLength(0);
+    expect(document.documentElement.classList.contains(LIQUID_GLASS_CLASS)).toBe(false);
   });
 
   it('is a hard no-op on iOS < 26', () => {
     mockNavigator({ userAgent: UA.iphone18 });
     const restore = enableLiquidGlassFix();
     expect(viewportMetas()).toHaveLength(0);
+    expect(document.documentElement.classList.contains(LIQUID_GLASS_CLASS)).toBe(false);
     restore();
     expect(viewportMetas()).toHaveLength(0);
   });
@@ -100,6 +105,7 @@ describe('enableLiquidGlassFix', () => {
     mockNavigator({ userAgent: UA.androidChrome });
     enableLiquidGlassFix();
     expect(viewportMetas()).toHaveLength(0);
+    expect(document.documentElement.classList.contains(LIQUID_GLASS_CLASS)).toBe(false);
   });
 });
 

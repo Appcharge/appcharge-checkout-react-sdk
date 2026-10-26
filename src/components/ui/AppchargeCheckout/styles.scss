@@ -8,3 +8,14 @@
   left: 0;
   z-index: 9999;
 }
+
+/* iOS 26 Safari "Liquid Glass" only (class added by enableLiquidGlassFix on
+   iOS/iPadOS 26+). Stretch the iframe to the FULL screen — including behind the
+   translucent bottom toolbar — so the publisher's page no longer shows through
+   there. `100lvh` is the large viewport (chrome retracted) = full screen height;
+   `position: fixed` anchors it to the viewport regardless of ancestors. Scoped to
+   the marker class, so there is zero effect on Android / desktop / older iOS. */
+html.ac-ios26-liquid-glass .iframe {
+  position: fixed;
+  height: 100lvh;
+}
